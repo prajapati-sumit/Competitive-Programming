@@ -1,95 +1,90 @@
 #include <bits/stdc++.h>
+
 using namespace std;
- 
-//CODED BY SUMIT KUMAR PRAJAPATI
-typedef unsigned long long ull;
-typedef long long ll;
-typedef pair<int, int>  pii;
-typedef pair<ll, ll>  pl;
+#define ll long long
 
-#define si(x) scanf("%d",&x)
-#define sl(x) scanf("%lld",&x)
-#define ss(s) scanf("%s",s)
-#define pi(x) printf("%d\n",x)
-#define pl(x) printf("%lld\n",x)
-#define ps(s) printf("%s\n",s)
-#define PI 3.1415926535897932384626
-#define pb push_back
-#define mk make_pair
-#define F first
-#define S second
-#define all(x) x.begin(), x.end()
-#define clr(x) memset(x, 0, sizeof(x))
-#define rep(i,n) for(ll i=0;i<n;i++)
-#define repe(i,n) for(ll i=1;i<=n;i++)
-#define FOR(i,a,b) for(ll i=a;i<=b;i++)
-#define printar(a,s,e) FOR(i,s,e)cout<<a[i]<<" ";cout<<'\n'
-#define curtime chrono::high_resolution_clock::now()
-#define timedif(start,end) chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-const int MX=1e5+5;
-const int MD=1e9+7;
-const int MDL=99824453;
-auto time0 = curtime;
- 
- 
- 
- 
- 
- 
-void solve(){
-  
-    
-    int n;
-    cin>>n;
-    int a[n+1];
-    map<int,int>mp;
-    repe(i,n){
-        cin>>a[i];
-        int cur=a[i];
-        for(int j=2;j*j<=cur;j++){
-            if(cur%j==0){
-                while(cur%j==0)
-                    cur/=j;
-                mp[j]++;
-            }
-        }
-        if(cur>1)
-            mp[cur]+=1;
+/*
+ * Complete the 'solve' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts following parameters:
+ *  1. INTEGER x1
+ *  2. INTEGER y1
+ *  3. INTEGER x2
+ *  4. INTEGER y2
+ */
+ll  gcd(ll  a, ll  b, ll & x, ll & y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
     }
-
-    int ans=-1;
-    for(auto x:mp){
-        //cout<<x.first<<" "<<x.second<<'\n';
-        if(x.second>ans)
-            ans=x.second;
-    }
-    cout<<(n-ans)<<'\n';
-
-} 
- 
- 
-int main() {
-
-    #ifndef ONLINE_JUDGE
-        freopen("input.txt", "r", stdin);
-        freopen("output.txt", "w", stdout);
-    #else
-        ios_base::sync_with_stdio(false);
-        cin.tie(NULL);
-        cout.tie(NULL);
-    #endif
-
-    srand(time(0)); 
-
-    time0 = curtime;
-    ll t=1;
-    cin>>t;
-    while(t--)
-        solve();
-    
-    auto timeend=curtime;
-    auto extime=timedif(time0,timeend)*1e-9;
-    cerr<<"Execution Time: "<<extime<<" sec\n";
-    return 0;
- 
+    ll  x1, y1;
+    ll  d = gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return d;
 }
+
+bool find_any_solution(ll  a, ll  b, ll  c, ll  &x0, ll  &y0, ll  &g) {
+    g = gcd(abs(a), abs(b), x0, y0);
+    if (c % g) {
+        return false;
+    }
+
+    x0 *= c / g;
+    y0 *= c / g;
+    if (a < 0) x0 = -x0;
+    if (b < 0) y0 = -y0;
+    return true;
+}
+ll  solve(ll  x1, ll  y1, ll  x2, ll  y2) {
+    // (x2-x1)*(y-y1)-(y2-y1)*(x-x1)=0
+    // -(x2-x1)*y+(y2-y1)*x=-y1*(x2-x1)+x1*(y2-y1)
+    ll  a=(y2-y1);
+    ll  b=-(x2-x1);
+    ll  c=-y1*(x2-x1)+x1*(y2-y1);
+    cout<<a<<" "<<b<<" "<<c<<'\n';
+    if(a==0 && b==0)
+        return 0;
+    ll  x=0,y=0,g=1;
+    // find_any_solution(a,b,c,x,y,g);
+    // x1=x+k1*b/g
+    ll k1,k2;
+    if(b==0){
+        k1=y1;
+        k2=y2;
+    }
+    else if(a==0){
+        k1=x1;
+        k2=x2;
+    }
+    else{
+        k1=((x1-x)*g)/b;
+        k2=((x2-x)*g)/b;
+    }
+  
+    // cerr<<k1<<" "<<k2<<'\n';
+    // // x2=x+k2*b/g
+    // cerr<<x<<" "<<y<<" "<<g<<" \n";
+    return abs(k2-k1)-1;
+    
+}
+
+int main()
+{
+    
+    ll  t;
+    cin>>t;
+    for (ll  t_itr = 0; t_itr < t; t_itr++) {
+        ll  x1,x2,y1,y2;
+        cin>>x1>>y1>>x2>>y2;
+        ll  result = solve(x1, y1, x2, y2);
+
+        cout << result << "\n";
+    }
+
+
+    return 0;
+}
+

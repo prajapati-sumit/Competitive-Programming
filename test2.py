@@ -1,47 +1,58 @@
-
-#For storing the path
-stack=[]
-def recursion(x,y,m,n):
-    #End of the path
-    if x==m and y==n:
-        stack.append((x,y))
-        for x in stack:
-            print(x,end=" ")
-        print()
-        stack.pop()
-        return
-    #Out of Grid
-    if x>m or y>n:
-        return
+def distance(a):
+    l = len(a)
+    d = 0
+    for i in range(1,len(a)):
+        if a[i]!=a[i-1]:
+            d+=1
+        else:
+            d+=2
+    return d
+def listupdate(a,x):
+        if a[x-1]>0:
+            a[x-1]-=1
+        else:
+            a[x-1]+=1
+        return a
+# print(distance([0,1,0,0,1]))
+t = int(input())
+for i in range(t):
+    [n,k]=list(map(int,input().strip().split()))
+    a = input()
+    klist = list(map(int,input().strip().split()))
+    c = []
     
-    stack.append((x,y))
-    recursion(x+1,y,m,n)   #Go RIGHT
-    recursion(x,y+1,m,n)   #Go UP
-    stack.pop()
+    for x in a:
+        c.append(int(x))
+    d = distance(c)
+    # print(d)
+    for x in klist:
+        if x-1==0:
+            if c[0]!=c[1]:
+                d+=1
+                print(d)
 
+            else:
+                d-=1
+                print(d)
+            c = listupdate(c,x-1)
 
-
-def iterative(x,y,m,n):
-    cur=[(1,1)]
-    stack.append(cur)
-    while len(stack):
-        
-        # print(stack)
-        top=stack[-1]
-        stack.pop()
-        
-        lx=top[-1][0]
-        ly=top[-1][1]
-        if lx==m and ly==n:
-            print(top)
-            continue
-        if lx<m:
-            stack.append(top+[(lx+1,ly)])
-        if ly<n:
-            stack.append(top+[(lx,ly+1)])
-       
-
-m=2
-n=2
-recursion(1,1,m,n)
-iterative(1,1,m,n)
+        elif x-1==n-1:
+            if c[x-2]!=c[x-1]:
+                d+=1
+                print(d)
+            else:
+                d-=1
+                print(d)
+            c = listupdate(c,x-1)
+        else:
+            if c[x-2]!=c[x-1] and c[x]!=c[x-1]:
+                d+=2
+                print(d)
+            elif c[x-2]!=c[x-1] and c[x]==c[x-1]:
+                print(d) 
+            elif c[x-2]==c[x-1] and c[x]!=c[x-1]:
+                print(d)
+            elif c[x-2]!=c[x-1] and c[x]!=c[x-1]:
+                d-=2
+                print(d)
+            c = listupdate(c,x-1)

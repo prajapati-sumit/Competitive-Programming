@@ -22,96 +22,84 @@ using namespace std;
 #define endl                '\n'
 #define curtime             chrono::high_resolution_clock::now()
 #define timedif(start,end)  chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-#define INF                 1'000'000'000
 #define MD                  1'000'000'007
 #define MDL                 998244353
 #define MX                  100'005
 
 
+const ll INF=1e16;
 auto time0 = curtime;
 random_device rd;
 default_random_engine generator(rd());
 uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 
 //Is testcase present?
- 
- 
-int n;
-string s;
-
-int B1(int alice,int bob){
-    
-    bool ok=true;
-    int cnt0=0;
-    rep(i,n){
-        if(s[i]=='0')
-            ok=false;
-        cnt0+=(s[i]=='0');
-    }
-    if(ok)
-        return 0;
-
-    if(n%2==1 && s[n/2]=='0'){
-        alice+=(1+cnt0/2-1);
-        bob+=cnt0/2+1;
-    }
-    else{
-        alice+=cnt0/2+1;
-        bob+=cnt0/2-1;
-    }
-    // cout<<alice<<" "<<bob<<' ';
-    if(alice==bob)
-        return 0;
-    else if(alice>bob)
-        return 2;
-    else
-        return 1; 
-} 
- 
-void solve(){
-  
-    cin>>n;
-    cin>>s;  
-    int dif=0,same=0;
-    rep(i,n/2){
-        if(s[i]!=s[n-i-1]){
-            dif++;
-            if(s[i]=='0')
-                s[i]='1';
+ll minimum_dif(vector<ll>& a,vector<ll>& b){
+    ll res=INF;
+    if(a.size()==0)
+        return INF;
+    if(b.size()==0)
+        return INF;
+    for(auto &el:b){
+        ll l=0,r=a.size()-1;
+        ll mid,ind=r;
+        while(l<=r){
+            mid=(l+r)>>1;
+            if(a[mid]>=el){
+                r=mid-1;
+                ind=mid;
+            }
             else
-                s[n-i-1]='1';
+                l=mid+1;
         }
-        if(s[i]==s[n-i-1] && s[i]=='0')
-            same+=2-(i==n/2 && n%2==1);
+        res=min(res,abs(el-a[ind]));
+        if(ind>0)
+            res=min(res,abs(el-a[ind-1]));
+        if(ind<(a.size()-1))
+            res=min(res,abs(el-a[ind+1]));
     }
-    int alice=0,bob=0;
-    if(dif==0){
-        int x=B1(0,0);
-        if(x==0)
-            cout<<"DRAW\n";
-        else if(x==1)
-            cout<<"ALICE\n";
+    return res;
+}
+
+void solve(){
+    
+    ll n;cin>>n;
+    vector<ll>R,G,B;
+    ll x;
+    char ch;
+    repe(i,2*n){
+        cin>>x>>ch;
+        if(ch=='R')
+            R.pb(x);
+        else if(ch=='G')
+            G.pb(x);
         else
-            cout<<"BOB\n";
+            B.pb(x);
+    }
+    sort(all(R));
+    sort(all(G));
+    sort(all(B));
+    ll sz1=R.size(),sz2=G.size(),sz3=B.size();
+    if(sz1%2==0 && sz2%2==0 && sz3%2==0){
+        cout<<"0";
         return;
     }
-    if(n%2==1 & s[n/2]=='0'){
-        alice=1;
-        bob=dif;
+    // cout<<sz1<<" "<<sz2<<" "<<sz3<<'\n';
+    // return;
+    assert(((sz1%2)+(sz2%2)+(sz3%2))==2);
+    ll res=INF;
+    ll GB=minimum_dif(B,G),RB=minimum_dif(R,B),RG=minimum_dif(R,G);
+    if(sz1%2==0){
+        res=min(GB,RB+RG);
+    }
+    else if(sz2%2==0){
+        res=min(RB,RG+GB);
     }
     else{
-        i
-        bob=dif-1;
-        alice=1;
-    }   
+        res=min(RG,RB+GB);
+    }
 
-    int x=B1(bob,alice);
-    if(x==0)
-        cout<<"DRAW\n";
-    else if(x==1)
-        cout<<"BOB\n";
-    else
-        cout<<"ALICE\n";
+    cout<<res;
  
 } 
  
@@ -123,7 +111,7 @@ int main() {
     time0 = curtime;
 
     int t=1;
-    cin>>t;
+    // cin>>t;
     repe(tt,t){
         //cout<<"Case #"<<tt<<": ";
         solve();

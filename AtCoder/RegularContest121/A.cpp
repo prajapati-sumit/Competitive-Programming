@@ -5,6 +5,7 @@ using namespace std;
 
 #define ull                 unsigned long long
 #define ll                  long long           
+#define int                  long long           
 #define pii                 pair<int, int>
 #define pll                 pair<ll, ll>
 #define pb                  push_back
@@ -25,7 +26,7 @@ using namespace std;
 #define INF                 1'000'000'000
 #define MD                  1'000'000'007
 #define MDL                 998244353
-#define MX                  100'005
+#define MX                  200'005
 
 
 auto time0 = curtime;
@@ -36,94 +37,60 @@ uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 //Is testcase present?
  
  
-int n;
-string s;
-
-int B1(int alice,int bob){
-    
-    bool ok=true;
-    int cnt0=0;
-    rep(i,n){
-        if(s[i]=='0')
-            ok=false;
-        cnt0+=(s[i]=='0');
-    }
-    if(ok)
-        return 0;
-
-    if(n%2==1 && s[n/2]=='0'){
-        alice+=(1+cnt0/2-1);
-        bob+=cnt0/2+1;
-    }
-    else{
-        alice+=cnt0/2+1;
-        bob+=cnt0/2-1;
-    }
-    // cout<<alice<<" "<<bob<<' ';
-    if(alice==bob)
-        return 0;
-    else if(alice>bob)
-        return 2;
-    else
-        return 1; 
-} 
- 
+int x[MX];
+int y[MX]; 
+bool cmp1(int a,int b){
+    return x[a]==x[b]?y[a]<y[b]:x[a]<x[b];
+}
+bool cmp2(int a,int b){
+    return y[a]==y[b]?x[a]<x[b]:y[a]<y[b];
+}
 void solve(){
   
+    int n;
     cin>>n;
-    cin>>s;  
-    int dif=0,same=0;
-    rep(i,n/2){
-        if(s[i]!=s[n-i-1]){
-            dif++;
-            if(s[i]=='0')
-                s[i]='1';
-            else
-                s[n-i-1]='1';
-        }
-        if(s[i]==s[n-i-1] && s[i]=='0')
-            same+=2-(i==n/2 && n%2==1);
+    
+    rep(i,n){
+        cin>>x[i]>>y[i];
     }
-    int alice=0,bob=0;
-    if(dif==0){
-        int x=B1(0,0);
-        if(x==0)
-            cout<<"DRAW\n";
-        else if(x==1)
-            cout<<"ALICE\n";
-        else
-            cout<<"BOB\n";
-        return;
+    int xs[n];
+    int ys[n];
+    rep(i,n)
+        xs[i]=ys[i]=i;
+    sort(xs,xs+n,cmp1);  
+    sort(ys,ys+n,cmp2);  
+    // trav(el,xs)
+    //     cout<<el<<" ";
+    // cout<<'\n';
+    // trav(el,ys)
+    //     cout<<el<<" ";
+    // cout<<'\n';
+    int res=0;
+    if(!(xs[0]==ys[0] && xs[n-1]==ys[n-1])){
+        int op1=abs(x[xs[0]]-x[xs[n-1]]);
+        int op2=abs(y[ys[0]]-y[ys[n-1]]);
+        res=min(op1,op2);
     }
-    if(n%2==1 & s[n/2]=='0'){
-        alice=1;
-        bob=dif;
-    }
-    else{
-        i
-        bob=dif-1;
-        alice=1;
-    }   
-
-    int x=B1(bob,alice);
-    if(x==0)
-        cout<<"DRAW\n";
-    else if(x==1)
-        cout<<"BOB\n";
-    else
-        cout<<"ALICE\n";
+    
+    int op1=max(abs(x[xs[1]]-x[xs[0]]),abs(x[xs[1]]-x[xs[n-1]]));
+    int op2=max(abs(x[xs[n-2]]-x[xs[0]]),abs(x[xs[n-2]]-x[xs[n-1]]));
+    int op3=max(abs(y[ys[1]]-y[ys[0]]),abs(y[ys[1]]-y[ys[n-1]]));
+    int op4=max(abs(y[ys[n-2]]-y[ys[0]]),abs(y[ys[n-2]]-y[ys[n-1]]));
+    res=max(res,max({op1,op2,op3,op4}));
+    
+    cout<<res;
  
 } 
  
  
-int main() {
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     time0 = curtime;
 
     int t=1;
-    cin>>t;
+    // cin>>t;
     repe(tt,t){
         //cout<<"Case #"<<tt<<": ";
         solve();

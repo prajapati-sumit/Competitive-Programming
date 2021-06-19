@@ -22,7 +22,7 @@ using namespace std;
 #define endl                '\n'
 #define curtime             chrono::high_resolution_clock::now()
 #define timedif(start,end)  chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-#define INF                 1'000'000'000
+#define INF                 2'000'000'002
 #define MD                  1'000'000'007
 #define MDL                 998244353
 #define MX                  100'005
@@ -36,83 +36,26 @@ uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 //Is testcase present?
  
  
-int n;
-string s;
-
-int B1(int alice,int bob){
-    
-    bool ok=true;
-    int cnt0=0;
-    rep(i,n){
-        if(s[i]=='0')
-            ok=false;
-        cnt0+=(s[i]=='0');
-    }
-    if(ok)
-        return 0;
-
-    if(n%2==1 && s[n/2]=='0'){
-        alice+=(1+cnt0/2-1);
-        bob+=cnt0/2+1;
-    }
-    else{
-        alice+=cnt0/2+1;
-        bob+=cnt0/2-1;
-    }
-    // cout<<alice<<" "<<bob<<' ';
-    if(alice==bob)
-        return 0;
-    else if(alice>bob)
-        return 2;
-    else
-        return 1; 
-} 
+ 
  
 void solve(){
   
+    ll n;
     cin>>n;
-    cin>>s;  
-    int dif=0,same=0;
-    rep(i,n/2){
-        if(s[i]!=s[n-i-1]){
-            dif++;
-            if(s[i]=='0')
-                s[i]='1';
-            else
-                s[n-i-1]='1';
-        }
-        if(s[i]==s[n-i-1] && s[i]=='0')
-            same+=2-(i==n/2 && n%2==1);
-    }
-    int alice=0,bob=0;
-    if(dif==0){
-        int x=B1(0,0);
-        if(x==0)
-            cout<<"DRAW\n";
-        else if(x==1)
-            cout<<"ALICE\n";
-        else
-            cout<<"BOB\n";
-        return;
-    }
-    if(n%2==1 & s[n/2]=='0'){
-        alice=1;
-        bob=dif;
-    }
-    else{
-        i
-        bob=dif-1;
-        alice=1;
-    }   
-
-    int x=B1(bob,alice);
-    if(x==0)
-        cout<<"DRAW\n";
-    else if(x==1)
-        cout<<"BOB\n";
-    else
-        cout<<"ALICE\n";
- 
+    string s;
+    
+    ll a[n];
+    rep(i,n)
+        cin>>a[i];
+    sort(a,a+n);
+    ll smallest=INF;
+    ll ans=1;
+    for(ll i=1;i<n;i++){
+        smallest=min(smallest,a[i]-a[i-1]);
+        if(smallest>=a[i])
+            ans=i+1;
+    }  
+    cout<<ans<<'\n';
 } 
  
  

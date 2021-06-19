@@ -36,82 +36,55 @@ uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 //Is testcase present?
  
  
-int n;
-string s;
+int X,W,E;
+int D=60;
 
-int B1(int alice,int bob){
-    
-    bool ok=true;
-    int cnt0=0;
-    rep(i,n){
-        if(s[i]=='0')
-            ok=false;
-        cnt0+=(s[i]=='0');
-    }
-    if(ok)
-        return 0;
+vector<char> my(D+1),his(D+1);
+vector<char>moves{'P','R','S'};
+int nax=61;
+pair<double,int>dp[61][61][61];
 
-    if(n%2==1 && s[n/2]=='0'){
-        alice+=(1+cnt0/2-1);
-        bob+=cnt0/2+1;
-    }
-    else{
-        alice+=cnt0/2+1;
-        bob+=cnt0/2-1;
-    }
-    // cout<<alice<<" "<<bob<<' ';
-    if(alice==bob)
-        return 0;
-    else if(alice>bob)
-        return 2;
-    else
-        return 1; 
-} 
- 
+
+double total=0;
 void solve(){
   
-    cin>>n;
-    cin>>s;  
-    int dif=0,same=0;
-    rep(i,n/2){
-        if(s[i]!=s[n-i-1]){
-            dif++;
-            if(s[i]=='0')
-                s[i]='1';
-            else
-                s[n-i-1]='1';
+    my.clear();
+    his.clear();
+    cin>>W>>E;
+    rep(i,nax)
+        rep(j,nax)
+            rep(k,nax)
+                dp[i][j][k]={-1,-1};
+    fn(0,0,0);
+    // cout<<dp[0][0][0].ff<<" "<<dp[0][0][0].ss<<'\n';
+    int p=0,r=0,s=0;
+    while(true){
+        if(p+r+s==60)
+            break;
+        double PP=dp[p+1][r][s].ff;
+        double PR=dp[p][r+1][s].ff;
+        double PS=dp[p][r][s+1].ff;
+        // cout<<p<<" "<<r<<" "<<s<<" "<<PP<<" "<<PR<<" "<<PS<<'\n';
+        if(PP>=PR && PP>=PS){
+            my.pb('P');
+            p++;
         }
-        if(s[i]==s[n-i-1] && s[i]=='0')
-            same+=2-(i==n/2 && n%2==1);
-    }
-    int alice=0,bob=0;
-    if(dif==0){
-        int x=B1(0,0);
-        if(x==0)
-            cout<<"DRAW\n";
-        else if(x==1)
-            cout<<"ALICE\n";
+        else if(PR>=PP && PR>=PS){
+            my.pb('R');
+            r++;
+        }
+        else if(PS>=PR && PS>=PP){
+            my.pb('S');
+            s++;
+        }
         else
-            cout<<"BOB\n";
-        return;
+            assert(false);
     }
-    if(n%2==1 & s[n/2]=='0'){
-        alice=1;
-        bob=dif;
-    }
-    else{
-        i
-        bob=dif-1;
-        alice=1;
-    }   
-
-    int x=B1(bob,alice);
-    if(x==0)
-        cout<<"DRAW\n";
-    else if(x==1)
-        cout<<"BOB\n";
-    else
-        cout<<"ALICE\n";
+    assert(my.size()==60);
+    for(auto &el:my)
+        cout<<el;
+    cout<<'\n';
+    // total+=dp[0][0][0].ff;
  
 } 
  
@@ -121,13 +94,15 @@ int main() {
     cin.tie(NULL);
 
     time0 = curtime;
-
+    srand(time(0));
     int t=1;
     cin>>t;
+    cin>>X;
     repe(tt,t){
-        //cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
+    // cout<<total<<'\n';
     
     //cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";
     return 0;

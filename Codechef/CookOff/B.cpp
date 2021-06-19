@@ -22,10 +22,10 @@ using namespace std;
 #define endl                '\n'
 #define curtime             chrono::high_resolution_clock::now()
 #define timedif(start,end)  chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-#define INF                 1'000'000'000
+const ll INF=1e10;
 #define MD                  1'000'000'007
 #define MDL                 998244353
-#define MX                  100'005
+const ll MX= 1002;
 
 
 auto time0 = curtime;
@@ -36,83 +36,30 @@ uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 //Is testcase present?
  
  
-int n;
-string s;
-
-int B1(int alice,int bob){
-    
-    bool ok=true;
-    int cnt0=0;
-    rep(i,n){
-        if(s[i]=='0')
-            ok=false;
-        cnt0+=(s[i]=='0');
-    }
-    if(ok)
-        return 0;
-
-    if(n%2==1 && s[n/2]=='0'){
-        alice+=(1+cnt0/2-1);
-        bob+=cnt0/2+1;
-    }
-    else{
-        alice+=cnt0/2+1;
-        bob+=cnt0/2-1;
-    }
-    // cout<<alice<<" "<<bob<<' ';
-    if(alice==bob)
-        return 0;
-    else if(alice>bob)
-        return 2;
-    else
-        return 1; 
-} 
- 
+ll a[MX][MX];
 void solve(){
   
-    cin>>n;
-    cin>>s;  
-    int dif=0,same=0;
-    rep(i,n/2){
-        if(s[i]!=s[n-i-1]){
-            dif++;
-            if(s[i]=='0')
-                s[i]='1';
-            else
-                s[n-i-1]='1';
+    
+    ll x1,y1,x2, y2;
+    cin>>x1>>y1>>x2>>y2;
+    ll ans=0;       
+    while(true){
+        
+        ans+=a[x1][y1];
+        if(x1==x2 && y1==y2)
+            break;
+        ll op1=(x1==x2)?-INF:a[x1+1][y1];
+        ll op2=(y1==y2)?-INF:a[x1][y1+1];
+        if(op1>op2){
+            x1++;
         }
-        if(s[i]==s[n-i-1] && s[i]=='0')
-            same+=2-(i==n/2 && n%2==1);
-    }
-    int alice=0,bob=0;
-    if(dif==0){
-        int x=B1(0,0);
-        if(x==0)
-            cout<<"DRAW\n";
-        else if(x==1)
-            cout<<"ALICE\n";
         else
-            cout<<"BOB\n";
-        return;
-    }
-    if(n%2==1 & s[n/2]=='0'){
-        alice=1;
-        bob=dif;
-    }
-    else{
-        i
-        bob=dif-1;
-        alice=1;
-    }   
+            y1++;
+        
 
-    int x=B1(bob,alice);
-    if(x==0)
-        cout<<"DRAW\n";
-    else if(x==1)
-        cout<<"BOB\n";
-    else
-        cout<<"ALICE\n";
- 
+    }
+    cout<<ans<<'\n';
+   
 } 
  
  
@@ -120,9 +67,16 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    time0 = curtime;
-
-    int t=1;
+    repe(i,MX-1){
+        ll cur=(i*(i+1))/2,inc=i;
+        for(ll j=1;j<MX;j++){
+            a[i][j]=cur;
+            cur+=inc;
+            inc++;
+        }
+    }
+   
+    ll t=1;
     cin>>t;
     repe(tt,t){
         //cout<<"Case #"<<tt<<": ";
