@@ -1,5 +1,5 @@
-Bob
-Alice
-Alice
-Alice
-Bob
+i i i i i i i i
+i 0 i i i i i i
+i i i i 0 i i i
+i 0 i i i i i i
+i i i i i i i i

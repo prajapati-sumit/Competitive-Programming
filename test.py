@@ -1,13 +1,16 @@
+from math import sqrt
 
+def is_pefect(x):
+    if x<0:
+        return False
+    s=int(sqrt(x))
+    return s*s==x
 
+for z in range(1000):
+    
+    x2=z*z-200
+    y2=z*z-101
 
-def printxor(n):
-    res=0
-    for i in range(1,n):
-        print(i,"^",end=" ")
-        res^=i
-    res^=n
-    print(n,"=",res)
+    if is_pefect(x2) and is_pefect(y2):
+        print(x2,y2,z)
 
-for i in range(1,16):
-    printxor(i)

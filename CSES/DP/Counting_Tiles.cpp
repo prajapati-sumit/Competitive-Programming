@@ -42,6 +42,15 @@ int dp[1001][1025];
 
 int fn(int i,int mask){
 
+    if(i<0)
+        return 0;
+    if(i==0){
+        if(mask==0)
+            return 1;
+        return 0;
+    }
+
+    
     
 }
 void solve(){

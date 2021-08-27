@@ -1,10 +1,11 @@
-// AUTHOR: Sumit Prajapati      
+//~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
 using namespace std;
 
 
 #define ull                 unsigned long long
-#define ll                  long long           
+#define ll                  long long
+// #define int                 long long           
 #define pii                 pair<int, int>
 #define pll                 pair<ll, ll>
 #define pb                  push_back
@@ -13,89 +14,64 @@ using namespace std;
 #define ss                  second
 #define all(a)              a.begin(),a.end()
 #define trav(x,v)           for(auto &x:v)
-#define debug(x)            cerr<<#x<<" = "<<x<<'\n'
-#define llrand()            distribution(generator)
 #define rep(i,n)            for(int i=0;i<n;i++)
 #define repe(i,n)           for(int i=1;i<=n;i++)
+#define read(a,n)           rep(i,n)cin>>a[i]
+#define reade(a,n)          repe(i,n)cin>>a[i]
 #define FOR(i,a,b)          for(int i=a;i<=b;i++)
 #define printar(a,s,e)      FOR(i,s,e)cout<<a[i]<<" ";cout<<'\n'
-#define endl                '\n'
 #define curtime             chrono::high_resolution_clock::now()
 #define timedif(start,end)  chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-#define INF                 1'000'000'000
-#define MD                  1'000'000'007
-#define MDL                 998244353
-#define MX                  100'005
+
+
 
 
 auto time0 = curtime;
-random_device rd;
-default_random_engine generator(rd());
-uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
+const int MD=1e9+7;
+const int MDL=998244353;
+const int INF=1e9;
+const int MX=1e5+5;
 
-//Is testcase present?
  
  
-int n,x;
-vector<int> v[MX];
-int branching[MX];
-
-int dfs1(int node,int par){
-
-    int here_branch=0;
-    for(auto child:v[node]){
-        if(child!=par)
-            here_branch+=dfs1(child,node);
-    }
-    if(here_branch==0)
-        here_branch++;
-    branching[node]=here_branch-1;
-    return here_branch;
-}
-int dfs2(int node,int par,int val){
-    int res=val;
-    int i=1;
-    for(auto child:v[node]){
-        if(child!=par){
-            res+=dfs2(child,node,i*val);
-            i++;
-        }
-    }
-    return res;
-}
+ 
+ 
 void solve(){
   
-    cin>>n>>x;
-    rep(i,n+1)
-        v[i].clear();
-    rep(i,n+1)
-        branching[i]=0;
-    int p,q;
-    repe(i,n-1)
-        cin>>p>>q,v[p].pb(q),v[q].pb(p);
-    dfs1(1,-1);
-    repe(i,n){
-        sort(all(v[i]),[&](int c,int d){return branching[c]>=branching[d];});
+    int n=5;
+    int dp[n+1][2];
+    dp[1][1]=1;
+    dp[1][0]=0;
+    FOR(i,2,n){
+        if(i%2==0){
+            dp[i][0]=dp[i-1][0]+dp[i-1][1];
+            dp[i][1]=dp[i-1][1];
+        }
+        else{
+            dp[i][0]=dp[i-1][1];
+            dp[i][1]=dp[i-1][0];
+        }
     }
-    int ans=dfs2(1,-1,x);
-    cout<<ans<<'\n';
+    repe(i,n)
+        cout<<i<<"-> "<<dp[i][0]<<" "<<dp[i][1]<<" : "<<(dp[i][0]+dp[i][1])<<'\n';
+ 
 } 
  
  
-int main() {
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     time0 = curtime;
-
+    srand(time(NULL));
     int t=1;
     cin>>t;
     repe(tt,t){
-        //cout<<"Case #"<<tt<<": ";
+        // cout<<"Case #"<<tt<<": ";
         solve();
     }
     
-    //cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";
+    // cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";
     return 0;
  
 }

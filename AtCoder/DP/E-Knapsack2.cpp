@@ -10,6 +10,7 @@ typedef pair<ll, ll>  pl;
 #define PI 3.1415926535897932384626
 #define pb push_back
 #define mk make_pair
+#define int long long
 #define ff first
 #define ss second
 #define watch(x) cerr<<#x<<" = "<<x<<'\n'
@@ -21,44 +22,43 @@ typedef pair<ll, ll>  pl;
 #define timedif(start,end) chrono::duration_cast<chrono::nanoseconds>(end - start).count()
 
 const int INF=1e9;
-const int MX=1e5+5;
-const int MD=1e9+7;
+const int MX=1e5+1;
+const int MD=1e15+7;
 const int MDL=99824453;
 auto time0 = curtime;
  
  
 ll N,W;
 ll weight[101],value[101]; 
-map<pair<ll,ll>,ll>dp; 
-
-ll fn(ll n,ll w){
-    if(w<0)
-        return -INF;
-    if(w==0)
-        return 0;
-    if(n==0)
-        return 0; 
-
-    if(dp.find({n,w})!=dp.end())
-        return dp[{n,w}];
-
-    return dp[{n,w}]=max(fn(n-1,w),value[n]+fn(n-1,w-weight[n]));
-} 
- 
 void solve(){
   
     cin>>N>>W;
+    int sum_val=0;
     repe(i,N)
-        cin>>weight[i]>>value[i];
-    ll ans=fn(N,W);
-    cout<<ans;
+        cin>>weight[i]>>value[i],sum_val+=value[i];
 
+    ll dp[sum_val+1][N+1];
+    int ans=0;
+    repe(i,N)
+        dp[0][i]=0;
+    repe(i,sum_val)
+        dp[i][0]=INF;   
+    repe(i,sum_val){
+        repe(j,N){
+
+            dp[i][j]=min(dp[i][j-1],
+                (i>=value[j]?weight[j]+dp[i-value[j]][j-1]:INF));
+            if(dp[i][j]<=W)
+                ans=max(ans,i);
+        }
+    }
+    cout<<ans<<'\n';
   
  
 } 
  
  
-int main() {
+int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 

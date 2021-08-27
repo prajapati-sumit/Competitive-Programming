@@ -114,11 +114,11 @@ void reRoot(int from, int to) {
     subSize[from] = (subSize[from] - subSize[to]);
     subDist[to] = (subDist[to] + subDist[from] + subSize[from]);
     subSize[to] = n;
-    if (values[to].size() == 0) {
-        values[to][0] = subDist[to];
-        for (int &el : v[to])
-            values[to][el] = subDist[el];
-    }
+    // if (values[to].size() == 0) {
+    //     values[to][0] = subDist[to];
+    //     for (int &el : v[to])
+    //         values[to][el] = subDist[el];
+    // }
 
 }
 

@@ -34,44 +34,38 @@ default_random_engine generator(rd());
 uniform_int_distribution<ull> distribution(0,0xFFFFFFFFFFFFFFFF);
 
 //Is testcase present?
-const int nax=2e6;
-int n,x;
-int a[21];
-int dp[nax];
-int fn(int sz){
 
-    if(dp[sz]!=-1)
-        return dp[sz];
-    if(sz==0)
-        return dp[sz]=0;
-
-    int op1=fn(sz-1)+a[sz-1];
-    int op2=fn(sz-1);
-    int op3=a[sz-1];
-    vector<int> v{0,op1,op2,op3};
-    sort(all(v));
-    for(int i=3;i>=0;i--)
-        if(v[i]<=x)
-            return dp[sz]=v[i];
-    
-    assert(false);
-    return -1;
-
-
-
-}
  
 void solve(){
   
     
+    int n,x;
     cin>>n>>x;
+    int a[n];
     rep(i,n)
         cin>>a[i];
-    memset(dp,-1,sizeof(dp));
-    int ans=fn(n);
-    rep(i,n+1)
-        cout<<dp[i]<<" \n"[i==n];
-    cout<<ans;
+    int nax=(1<<n);
+    priority_queue<pii>pq;
+    rep(i,nax){
+        int sum=0;
+        rep(j,n)
+            if(i&(1<<j))
+                sum+=a[j];
+        if(sum<=x && sum>0)
+            pq.push({sum,i});
+    }
+    int cur_bit=0,ans=0;
+    while(!pq.empty()){
+        pii fr=pq.top();
+        pq.pop();
+        if(cur_bit&fr.ss)
+            continue;
+        ans++;
+        cout<<bitset<10>(fr.ss)<<"\n";
+        cur_bit|=fr.ss;
+
+    }
+    cout<<ans<<'\n';
            
   
  
