@@ -5,7 +5,7 @@ using namespace std;
 
 #define ull                     unsigned long long
 #define ll                      long long
-#define int                     long long
+// #define int                     long long
 #define pii                     pair<int, int>
 #define pll                     pair<ll, ll>
 #define pb                      push_back
@@ -33,22 +33,61 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 
 
-
-
-
+int n,m;
+int a[305][305];
+bool seats[305][305];
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    
+    cin>>n>>m;
+    vector<int>org;
+    map<int,int>mp;
+    map<int,vector<pii>>mp2;
+    repe(i,n)
+        repe(j,m)
+            cin>>a[i][j],org.pb(a[i][j]),mp[a[i][j]]++,seats[i][j]=0;
+    int p=1;
+    for(auto &el:mp){
+        vector<pii>tmp;
+        int L=p,R=p+el.ss-1;
+        int r1=((L)/m)+(L%m!=0);
+        int c1=L-(m*(r1-1));
+        int r2=((R)/m)+(R%m!=0);
+        int c2=R-(m*(r2-1));
+        
+        if(r1==r2){
+            for(int col=c1;col<=c2;col++)
+                tmp.pb({r1,col});
         }
+        else{
+            for(int col=1;col<=c2;col++)
+                tmp.pb({r2,col});
+            for(int col=1;col<=m;col++)
+                for(int row=r1+1;row<=r2-1;row++){
+                    tmp.pb({row,col});
+            }
+            for(int col=c1;col<=m;col++)
+                tmp.pb({r1,col});
+        }
+
+        mp2[el.ff]=tmp;
+        p=p+el.ss;
     }
+    int ans=0;
+    for(auto &el:org){
+        // [last+1,last+el+1]
+        pii best=mp2[el].back();
+        mp2[el].pop_back();
+        int r=best.ff;
+        int c=best.ss;
+        assert(!seats[r][c]);
+        repe(i,c-1)
+            ans+=seats[r][i];
+        seats[r][c]=1;
+        // cout<<el<<":"<<r<<" "<<c<<"->"<<ans<<"\n";
+
+    }
+    cout<<ans<<"\n";
 
 }
 

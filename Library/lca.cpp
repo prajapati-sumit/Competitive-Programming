@@ -4,7 +4,7 @@ vector<int> v[MX];
 int up[MX][LOG]; // up[v][j] is 2^j-th ancestor of v
 int depth[MX];
  
-void dfs(int a) {
+void dfs(int a,int par) {
     for(int b : v[a]) {
         if(b==par)
             continue;
@@ -13,7 +13,7 @@ void dfs(int a) {
         for(int j = 1; j < LOG; j++) {
             up[b][j] = up[up[b][j-1]][j-1];
         }
-        dfs(b);
+        dfs(b,a);
     }
 }
  

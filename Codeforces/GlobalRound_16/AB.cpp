@@ -38,18 +38,27 @@ const int MX = 1e5 + 5;
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    string s;
+    cin>>s;
+    bool ok=true;
+    int n=s.length();
+    rep(i,n)
+        if(s[i]=='0'){
+            ok=false;
+            break;
         }
+    if(ok){
+        cout<<"0\n";
+        return;
     }
-
+    int cnt=0;
+    rep(i,n-1)
+        if(s[i]=='0' && s[i+1]=='1')
+            cnt++;
+    if(s[n-1]=='0')
+        cnt++;
+    int ans=min(2LL,cnt);
+    cout<<ans<<"\n";
 }
 
 

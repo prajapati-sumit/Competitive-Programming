@@ -38,17 +38,54 @@ const int MX = 1e5 + 5;
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    int n, m;
+    cin >> n >> m;
+    int a[n][m];
+    vector<pii>model(m);
+    rep(i, m)
+    cin >> model[i].ff, model[i].ss = 0;
+    rep(i, n) {
+        rep(j, m) {
+            cin >> a[i][j];
         }
     }
+    int cnt = 0;
+    sort(all(model));
+    rep(i, n) {
+        multiset<int>st;
+        rep(j, m) {
+            st.insert(a[i][j]);
+            // cout << "{ " << model[j].ff << " " << model[j].ss << "} ";
+        }
+        // cout << "\n";
+        bool done[m] = {0};
+        rep(j, m) {
+            auto it = st.find(model[j].ff);
+            if (it == st.end()) {
+                if (model[j].ss==-1) {
+                    cnt++;
+                    // cout<<model[j].ff<<" "<<model[j].ss<<"\n";
+                }
+                else
+                    model[j].ss = -1;
+            }
+            else {
+                st.erase(it);
+                done[j] = true;
+            }
+        }
+        rep(j, m) {
+            if (!done[j]) {
+                done[j] = true;
+                auto it = st.begin();
+                model[j].ff = *it;
+                st.erase(it);
+            }
+        }
+        sort(all(model));
+
+    }
+    cout << cnt << "\n";
 
 }
 
@@ -61,7 +98,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
 

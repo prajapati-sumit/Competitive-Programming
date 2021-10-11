@@ -34,21 +34,97 @@ const int MX = 1e5 + 5;
 
 
 
+struct Node{
+    char f;
+    char l;
+    int fi;
+    int li;
+    int n;
+    int ans;
 
+};
+Node get_Node(char ch){
+    Node res;
+    res.n=1;
+    if(ch=='F'){
+        res.f='$';
+        res.l='$';
+        res.fi=0;
+        res.li=0;
+        res.ans=0;
+    }
+    else{
+        res.f=ch;
+        res.l=ch;
+        res.fi=1;
+        res.li=1;
+        res.ans=0;
+    }
+    res.n=1;
+    return res;
+
+}
+Node merge(Node A,Node B){
+
+    Node res;
+    if(A.f=='$'){
+        res.f=B.f;
+        res.fi=(A.n+B.fi)%MD;
+    }
+    else{
+        res.f=A.f;
+        res.fi=A.fi;
+    }
+    if(B.l=='$'){
+        res.l=A.l;
+        res.li=(B.n+A.li)%MD;
+    }
+    else{
+        res.l=B.l;
+        res.li=B.li;
+
+    }
+    
+    res.n=(A.n+B.n)%MD;
+
+    res.ans=(A.ans+B.ans)%MD;
+    if(A.li!='$' && B.li!='$' && A.li!=B.fi){
+        int x=(A.n+MD-A.li+1)%MD;
+        int y=(B.n+MD-B.fi+1)%MD;
+        res.ans=(res.ans+x*y)%MD;
+    }
+    return res;
+
+}
+void print(Node X){
+    cout<<"{ ";
+        cout<<"(X.f"<<" "<<X.f<<"),";
+        cout<<"(X.l"<<" "<<X.l<<"),";
+        cout<<"(X.fi"<<" "<<X.fi<<"),";
+        cout<<"(X.li"<<" "<<X.li<<"),";
+        cout<<"(X.ans"<<" "<<X.ans<<"),";
+    cout<<"}\n";
+}
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    int n;
+    cin>>n;
+    char ch;
+    cin>>ch;
+    Node cur=get_Node(ch);
+    print(cur);
+    repe(i,n-1){
+        cin>>ch;
+        if(ch=='.'){
+            cur=merge(cur,cur);
         }
+        else
+            cur=merge(cur,get_Node(ch));
+        print(cur);
     }
+    cout<<cur.ans<<"\n";
+
 
 }
 

@@ -30,25 +30,79 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 3e5 + 5;
 
+struct Ride{
+    int s;
+    int e;
+    int w;
+}R[MX];
 
-
+vector<int>start[MX];
+vector<int>khatam[MX];
+int D,N,K;
 
 
 void solve() {
 
+    cin>>D>>N>>K;
+    repe(i,D)
+        start[i].clear(),khatam[i].clear();
+    repe(i,N){
+        cin>>R[i].w>>R[i].s>>R[i].e;
+        start[R[i].s].pb(i);
+        khatam[R[i].e].pb(i);
+    }    
+    multiset<int>st;
+    multiset<int>st2;//helper
+    int sum=0;
+    int ans=0;
+    int sz;
+    repe(i,D){
 
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+        for(auto &el:start[i]){
+            sz=st.size();
+            if(sz<K){
+                st.insert(R[el].w);
+                sum+=R[el].w;
+            }
+            else if(sz==K){
+                auto it=st.begin();
+                if((*it)<R[el].w){
+                    sum-=(*it);
+                    st2.insert(*it);
+                    st.erase(it);
+                    sum+=(R[el].w);
+                    st.insert(R[el].w);
+                }
+                else
+                    st2.insert(R[el].w);
+            }
+        }
+        ans=max(sum,ans);
+
+        for(auto &el:khatam[i]){
+            auto it=st.lower_bound(R[el].w);
+            if(it!=st.end() && (*it==R[el].w)){
+                st.erase(it);
+                sum-=R[el].w;
+                if(st2.size()){
+                    auto it2=st2.end();
+                    it2--;
+                    st.insert(*it2);
+                    sum+=(*it2);
+                    st2.erase(it2);
+                }
+            }
+            else{
+                it=st2.lower_bound(R[el].w);
+                assert(it!=st2.end());
+                st2.erase(it);
+            }
+
         }
     }
+    cout<<ans<<"\n";
 
 }
 
@@ -61,7 +115,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
 

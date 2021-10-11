@@ -36,17 +36,47 @@ const int MX = 1e5 + 5;
 
 
 
-void solve() {
+void solve(int s,int n) {
 
+    if(n==0)
+        return;
+    vector<int>v;
+    int tmp=s,pw=1;
+    while(tmp>0){
+        int h=(tmp%10)*pw;
+        if(h)
+            v.pb(h);
+        tmp/=10;
+        pw*=10;
+    }
+    int c=0,x=0;
+    int sz=SZ(v);
+    rep(i,sz){
+        if((sz-c)+x>=n)
+            break;
+        c++;
+        x+=v[i];
+    }
+    if(c==0){
+        int sum=0;
+        rep(i,sz){
+            if(i<n-1)
+                cout<<v[i]<<" ";
+            else
+                sum+=v[i];
+        }
+        cout<<sum<<" ";
+    }
+    else{
 
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+        if(c==sz){
+            cout<<"1 ";
+            solve(x-1,(n-1));
+        }
+        else{
+            FOR(i,c,sz-1)
+                cout<<v[i]<<" ";
+            solve(x,n-(sz-c));
         }
     }
 
@@ -62,7 +92,10 @@ int32_t main() {
     cin >> t;
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
-        solve();
+        int s,n;
+        cin>>s>>n;
+        solve(s,n);
+        cout<<"\n";
     }
 
     // cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";

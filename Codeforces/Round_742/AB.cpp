@@ -30,26 +30,27 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 3e5 + 5;
 
 
 
-
+int xor_val[MX];
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
-        }
+    int a,b;
+    cin>>a>>b;
+    int xor_now=xor_val[a-1];
+    int ans=a;
+    if(xor_now==b){
+        cout<<ans<<'\n';
+        return;
     }
-
+    if((xor_now^b) != a){
+        cout<<(ans+1)<<'\n';
+        return;
+    }
+    cout<<(ans+2)<<'\n';
 }
 
 
@@ -60,6 +61,8 @@ int32_t main() {
     auto time0 = curtime;
     int t = 1;
     cin >> t;
+    repe(i,MX-1)
+        xor_val[i]=i^xor_val[i-1];
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
         solve();

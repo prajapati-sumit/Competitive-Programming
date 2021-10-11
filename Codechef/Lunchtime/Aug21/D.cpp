@@ -30,90 +30,110 @@ const int MDL = 998244353;
 const int INF = 1e9;
 const int MX = 1e5 + 5;
 
-
-vector<int>v[MX];
-
-vector<int>h;
-int cost[MX];
-
-void dfs(int x){
-
-    h.pb(cost[x]);
-    for(auto &el:v[x])
-        dfs(el);
-}
 int segm[8*MX];
-
+int segm2[8*MX];
+const int inv2=(MD+1)/2;
 void merge(int &A,int &B,int &res){
     res=(A+B)%MD;
 }
-int query(int cur,int start,int end,int qs,int qe){
+int query(int cur,int start,int end,int qs,int qe,bool one){
     if(start>=qs && end<=qe)
-        return segm[cur];
+        return (one?segm[cur]:segm2[cur]);
     if(start>qe || end<qs)
         return 0;          //INVALID RETURN 
     int mid=(start+end)>>1;
-    int A=query(2*cur,start,mid,qs,qe);
-    int B=query(2*cur+1,mid+1,end,qs,qe);
+    int A=query(2*cur,start,mid,qs,qe,one);
+    int B=query(2*cur+1,mid+1,end,qs,qe,one);
     //MERGING STEP
     int res;
     merge(A,B,res);  
 
     return res;
 }
-void update(int cur,int start,int end,int ind,int val){
+void update(int cur,int start,int end,int ind,int val,bool one){
     if(start==ind && start==end){
         //DO UPDATE
-        segm[cur]=val;
+        if(one)
+            segm[cur]=val;
+        else
+            segm2[cur]=val;
         return;
     }
     if(start>ind|| end<ind)
         return;          //OUT OF RANGE 
     int mid=(start+end)>>1;
-    update(cur<<1,start,mid,ind,val);
-    update((cur<<1)^1,mid+1,end,ind,val);
+    update(cur<<1,start,mid,ind,val,one);
+    update((cur<<1)^1,mid+1,end,ind,val,one);
     //MERGING STEP
-    merge(segm[2*cur],segm[2*cur+1],segm[cur]);
+    if(one)
+        merge(segm[2*cur],segm[2*cur+1],segm[cur]);
+    else
+        merge(segm2[2*cur],segm2[2*cur+1],segm2[cur]);
 
 }
  
+vector<int>v[MX];
+int in[MX];
+int out[MX];
+pii cost[MX];
+
+int timer;
+void dfs(int cur){
+
+    in[cur]=timer;
+    timer++;
+    for(auto &el:v[cur])
+        dfs(el);
+    out[cur]=timer;
+    timer++;
+}
+
 
 void solve() {
 
     int n;
     cin>>n;
-    h.clear();
-    int parent[n+1];
-    repe(i,n){
+    
+    timer=1;
+    repe(i,n)
         v[i].clear();
+    repe(i,8*n)
+        segm[i]=0,segm2[i]=0;
+
+    repe(i,n){
         if(i==1){
-            parent[i]=0;
             continue;
         }
         int x;
         cin>>x;
         v[x].pb(i);
-        parent[i]=x;
     }
-    map<int,int>mp;
     repe(i,n)
-        cin>>cost[i],mp[cost[i]];
-    int nax=1;
-    for(auto &el:mp)
-        el.ss=nax++;
-    repe(i,n)
-        cost[i]=mp[cost[i]];
-    assert(nax<2*MX);
-    dfs(1);
-    int sz=SZ(h);
-    int res=0;
-    for(int i=sz-1;i>=0;i--){
-        int here=query(1,1,n,1,h[i]-1);
-        res=(res+here)%MD;
-        update(1,1,n,h[i],here);
-    }
-    cout<<res<<'\n';
+        cin>>cost[i].ff,cost[i].ss=i;
+    sort(cost+1,cost+n+1,greater<pii>());
 
+    dfs(1);
+    int N=timer;
+    int res=0;
+    // segm:+-(1),segm2:++(0)
+    repe(i,n){
+        int here=1;
+        int x=cost[i].ss;
+        int in_time=in[x],out_time=out[x];
+        int qu=query(1,1,N,1,in_time,1);
+        int qu2=query(1,1,N,in_time,out_time,0);
+        qu2=(qu2*inv2)%MD;
+        here=(here+qu+qu2)%MD;
+        res=(res+here)%MD;
+        update(1,1,N,in_time,here,1);
+        update(1,1,N,out_time,MD-here,1);
+
+        update(1,1,N,in_time,here,0);
+        update(1,1,N,out_time,here,0);
+        // cout<<x<<"->"<<here<<": ["<<in_time<<" "<<out_time<<"]\n";
+    }
+    res=(res+MD-n)%MD;
+    cout<<res<<'\n';
 
 }
 

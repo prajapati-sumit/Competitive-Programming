@@ -35,20 +35,28 @@ const int MX = 1e5 + 5;
 
 
 
+int n;
+string s;
+// 0 -> left(F,X),1->right(F,O)
+set<char>st[2]={{'F','X'},{'F','O'}};
+int start_with(int start){
+
+    int cnt=0;
+    rep(i,n){
+        if(!st[start].count(s[i])){
+            start^=1;
+            cnt++;
+        }
+    }
+    return cnt;
+}
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
-        }
-    }
+    cin>>n;
+    cin>>s;
+    int ans=min(start_with(0),start_with(1));
+    cout<<ans<<"\n";
 
 }
 
@@ -61,7 +69,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
 

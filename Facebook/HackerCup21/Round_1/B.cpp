@@ -38,17 +38,30 @@ const int MX = 1e5 + 5;
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
-        }
+    
+    int n,m;
+    cin>>n>>m;
+    int a[n][m];
+    rep(i,n)
+        rep(j,m)
+            a[i][j]=1000;
+    int A,B;
+    cin>>A>>B;
+    if(A<(n+m-1) || B<(n+m-1)){
+        cout<<"Impossible\n";
+        return;
     }
+    int remA=A-(n+m-2),remB=B-(n+m-2);
+    rep(i,n)
+        a[i][0]=1,a[i][m-1]=1;
+    rep(i,m)
+        a[0][i]=1,a[n-1][i]=1;
+    a[n-1][m-1]=remA;
+    a[n-1][0]=remB;
+    cout<<"Possible\n";
+    rep(i,n)
+        rep(j,m)
+            cout<<a[i][j]<<" \n"[j==m-1];
 
 }
 
@@ -61,7 +74,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
 

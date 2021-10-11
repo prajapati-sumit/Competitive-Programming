@@ -35,20 +35,39 @@ const int MX = 1e5 + 5;
 
 
 
-
+int n;
+string s;
+char comp(char ch){
+    return ch^'X'^'O';
+}
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    cin>>n;
+    cin>>s;
+    char cur;
+    int ind=-1;
+    rep(i,n)
+        if(s[i]=='X' || s[i]=='O'){
+            ind=i;
+            cur=s[i];
+            break;
+        }
+    if(ind==-1){
+        cout<<"0\n";
+        return;
+    }
+    int ans=0;
+    rep(i,n){
+        if(s[i]==cur)
+            ind=i;
+        else if(s[i]==comp(cur)){
+            ans=(ans+(ind+1)*(n-i))%MD;
+            cur=s[i];
+            ind=i;
         }
     }
+    cout<<ans<<"\n";
+
 
 }
 
@@ -61,7 +80,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         solve();
     }
 

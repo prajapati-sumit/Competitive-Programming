@@ -35,20 +35,61 @@ const int MX = 1e5 + 5;
 
 
 
+char a[2][MX];
+
+
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    
+    int n;
+    cin>>n;
+    rep(i,n)
+        cin>>a[0][i];
+    rep(i,n)
+        cin>>a[1][i];
+    int ans=0;
+    int i=0;
+    bool zer=0,one=0;
+    while(true){
+        if(i>=n){
+            break;
         }
+        zer|=(a[0][i]=='0' || a[1][i]=='0');
+        one|=(a[0][i]=='1' || a[1][i]=='1');
+        // cout<<i<<" "<<zer<<" "<<one<<"\n";
+        if(zer && one){
+            ans+=2;
+            i++;
+            zer=0;
+            one=0;
+
+        }
+        else if(zer && !one){
+            if(i==n-1){
+                ans++;
+                i++;
+            }
+            else if(a[0][i+1]=='1' && a[1][i+1]=='1'){
+                ans+=2;
+                i+=2;
+            }
+            else{
+                ans++;
+                i++;
+            }
+            zer=0;
+            one=0;
+        }
+        else if(!zer && one){
+            i++;
+        }
+        else
+            assert(0);
+        
+
     }
+    cout<<ans<<"\n";
 
 }
 

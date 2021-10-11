@@ -1,11 +1,12 @@
+
+const int MX=1e5+5;
 vector<pii> G[MX];
 int n;
 int dist[MX];
-#warning fill the distance array with infinity
-void dijkstra(int start)
-{
+void dijkstra(int start){
     
- 
+    for(int i=1;i<=n;i++)
+        dist[i]=INF;
     dist[start]=0;
     priority_queue< pii,vector<pii>,greater<pii> > pq;
     pq.push(pii(0,start));
@@ -20,11 +21,11 @@ void dijkstra(int start)
  
  
         for(auto x: G[u])
-        {
-            if(dist[u]+x.second<dist[x.first])
+        {   int v=x.first,w=x.second;
+            if(dist[u]+w<dist[v])
             {
-                dist[x.first]=dist[u]+x.second;
-                pq.push(pii(dist[x.first],x.first));
+                dist[v]=dist[u]+w;
+                pq.push(pii(dist[v],v));
             }
         }
  

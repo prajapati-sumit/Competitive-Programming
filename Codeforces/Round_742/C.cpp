@@ -35,20 +35,44 @@ const int MX = 1e5 + 5;
 
 
 
-
-void solve() {
-
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+string s;
+int N;
+int fn(int cur,vector<int> carry){
+    if(cur==N){
+        for(auto &el:carry){
+            if(el)
+                return 0;
         }
+        return 1;
     }
+
+    int x=(s[cur]-'0'-carry[cur]+20)%10;
+    carry[cur]=0;
+    // cout<<x<<" "<<n<<": ";
+    // rep(i,5)
+    //     cout<<carry[i]<<" ";
+    // cout<<'\n';
+    int direct=max(0LL,x+1);
+    int indirect=9-x;
+    vector<int>tmp=carry;
+    tmp[cur+2]+=1;
+    int res=0;
+    if(direct)
+        res+=direct*fn(cur+1,carry);
+    if(indirect)
+        res+=indirect*fn(cur+1,tmp);
+    cout<<res<<" "<<cur<<" "<<s[cur]<<"\n";
+    return res;
+}
+void solve() {
+    cin>>s;
+    int n=s.length();
+    N=n;
+    vector<int>carry(15,0);
+    int ans=fn(0,carry);
+    ans-=2;
+    cout<<ans<<'\n';
+
 
 }
 

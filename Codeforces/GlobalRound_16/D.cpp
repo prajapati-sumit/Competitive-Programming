@@ -5,7 +5,7 @@ using namespace std;
 
 #define ull                     unsigned long long
 #define ll                      long long
-#define int                     long long
+// #define int                     long long
 #define pii                     pair<int, int>
 #define pll                     pair<ll, ll>
 #define pb                      push_back
@@ -38,17 +38,30 @@ const int MX = 1e5 + 5;
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
-        }
+    int n,m;
+    cin>>n>>m;
+    assert(n==1);
+    int org[m+1];
+    int a[m+1];
+    repe(i,m)
+        cin>>a[i],org[i]=a[i];
+    sort(a+1,a+m+1);
+    bool seats[m+1]={0};
+    int ans=0;
+    repe(i,m){
+        int which=a[i],where=-1;
+        // cout<<p<<" "<<which<<": ";
+        repe(i,m)
+            if(org[i]==which && !seats[i])
+                where=i;
+        assert(where!=-1);
+        repe(i,where-1)
+            ans+=seats[i];
+        seats[where]=1;
+        // repe(i,m)
+        //     cout<<seats[i]<<" \n"[i==m];
     }
+    cout<<ans<<"\n";
 
 }
 

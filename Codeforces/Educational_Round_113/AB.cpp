@@ -39,15 +39,43 @@ const int MX = 1e5 + 5;
 void solve() {
 
 
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    int n;
+    cin>>n;
+    string s;
+    cin>>s;
+    set<int> st;
+    rep(i,n)
+        if(s[i]=='2')
+            st.insert(i);
+    char a[n][n];
+    rep(i,n)
+        rep(j,n)
+            a[i][j]='=';
+    rep(i,n)
+        a[i][i]='X';            
+    rep(i,n){
+        if(s[i]=='2'){
+            bool ok=false;
+            for(auto &el:st){
+                if(el!=i && a[i][el]=='='){
+                    a[i][el]='+';
+                    a[el][i]='-';
+                    ok=true;
+                    break;
+                }
+            }
+            if(!ok){
+                cout<<"NO\n";
+                return;
+            }
         }
+    }
+    cout<<"YES\n";
+    rep(i,n){
+        rep(j,n){
+            cout<<a[i][j];
+        }
+        cout<<"\n";
     }
 
 }

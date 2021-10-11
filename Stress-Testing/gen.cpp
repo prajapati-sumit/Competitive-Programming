@@ -3,12 +3,19 @@
 using namespace std;
 
 #define rep(i,n)            for(int i=0;i<n;i++)
+#define int                 long long
 #define repe(i,n)           for(int i=1;i<=n;i++)
 #define read(a,n)           rep(i,n)cin>>a[i]
 #define reade(a,n)          repe(i,n)cin>>a[i]
 #define FOR(i,a,b)          for(int i=a;i<=b;i++)
 #define pb                  push_back
+#define all(a)              a.begin(),a.end()
+#define mtrand(a,b)         uniform_int_distribution<int>(a, b)(rng)
 
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const int MD=1e9+7;
+const int INF=1e6;
 
 int rand(int a, int b) {
     if(a>b)
@@ -53,23 +60,14 @@ void print_string(int n){
     cout<<'\n';
 }
 
-int main(int argc, char* argv[]) {
+int32_t main(int32_t argc, char* argv[]) {
     srand(atoi(argv[1]));
-    int t=5;
+    int t=10;
     cout<<t<<"\n";
     while(t--){
-        string s;
-        int n = rand(1, 20);
-        rep(i,n)
-            s.pb(char('a'+rand(0,25)));
-        cout<<s<<'\n';
-        continue;
-        s+=s;
-        int extra=rand(1,n-1);
-        rep(i,extra)
-            s.pb(s[i]);
-        cout<<s<<'\n';
-
+        int n = mtrand(1, INF);
+        int d = mtrand(0,9);
+        cout<<n<<" "<<d<<"\n";
     }
     
     

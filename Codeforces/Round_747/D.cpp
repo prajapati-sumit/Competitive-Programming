@@ -30,25 +30,65 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 2e5 + 5;
 
 
 
+vector<pii>G[MX];
 
+
+bool vis[MX];
+bool color[MX];
+int zero,one;
+//returns false if the graph is not bipartite.
+bool dfs(int u,int col){
+
+    vis[u]=true;
+    color[u]=col;
+    zero+=(col==0);
+    one+=(col==1);
+    for(auto &ch:G[u]){
+        int c=ch.ff,h=ch.ss;
+        if((!vis[c] && dfs(c,col^h)==false) || 
+            (vis[c] && color[u]^h!=color[c])){
+            return false;    
+        }
+    }
+    return true;
+}
 
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    int n,m;
+    cin>>n>>m;
+    int x,y;
+    string s;
+    repe(i,n){
+        vis[i]=0;
+        color[i]=0;
+        G[i].clear();
+    }
+    repe(i,m){
+        cin>>x>>y>>s;
+        int w=(s=="imposter");
+        G[x].pb({y,w});
+        G[y].pb({x,w});
+    }
+    int ans=0;
+    repe(i,n){
+        zero=0;
+        one=0;
+        if(!vis[i]){
+            bool ok=dfs(i,0);
+            if(!ok){
+                cout<<"-1\n";
+                return;
+            }
+            ans+=max(zero,one);
         }
     }
+    cout<<ans<<"\n";
+
 
 }
 

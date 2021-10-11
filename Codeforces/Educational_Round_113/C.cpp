@@ -27,29 +27,57 @@ using namespace std;
 
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 2e5 + 5;
 
 
+int fact[MX];
+int ifact[MX];
 
+ll bin_power(ll a,ll b,ll md){
+    ll res=1;
+    while (b){
+        if (b&1)
+            res=(res*a)%md;
+        a=(a*a)%md;
+        b>>=1;
+    }
+    return res;
+}
+int ncr(int n,int r){
+    if(r>n)
+        return 0;
+    return (fact[n]*ifact[n-r]%MDL)*ifact[r]%MDL;
 
-
+}
 void solve() {
 
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
-        }
+    int n;
+    cin>>n;
+    int a[n+1];
+    int f=-1,s=-1;
+    repe(i,n){
+        cin>>a[i];
+        if(a[i]>f)
+            s=f,f=a[i];
+        else if(a[i]>s)
+            s=a[i];
     }
-
+    if(f-s>1){
+        cout<<"0\n";
+        return;
+    }
+    if(f==s){
+        cout<<fact[n]<<"\n";
+        return;
+    }
+    int k=0;
+    repe(i,n)
+        k+=(a[i]==s);
+    int ans=fact[n];
+    ans=(ans+MDL-(ncr(n,k+1)*fact[k]%MDL)*fact[n-k-1]%MDL)%MDL;
+    cout<<ans<<"\n";
 }
 
 
@@ -60,6 +88,13 @@ int32_t main() {
     auto time0 = curtime;
     int t = 1;
     cin >> t;
+    fact[0]=1;
+    ifact[0]=1;
+    repe(i,MX-1){
+        fact[i]=(i*fact[i-1])%MDL;
+        ifact[i]=bin_power(fact[i],MDL-2,MDL);
+
+    }
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
         solve();

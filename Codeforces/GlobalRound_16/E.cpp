@@ -5,7 +5,7 @@ using namespace std;
 
 #define ull                     unsigned long long
 #define ll                      long long
-#define int                     long long
+// #define int                     long long
 #define pii                     pair<int, int>
 #define pll                     pair<ll, ll>
 #define pb                      push_back
@@ -30,25 +30,60 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 2e5 + 5;
 
 
 
+vector<int>v[MX];
+int n;
+bool add[MX];
+bool sub[MX];
 
-
-void solve() {
-
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+void dfs(int cur,int par){
+    bool isleaf=true,allminus=true;
+    for(auto &child:v[cur]){
+        if(child!=par){
+            isleaf=false;
+            dfs(child,cur);
+            if(add[child]){
+                allminus=false;
+            }
         }
     }
+    if(isleaf){
+        add[cur]=true;
+    }
+    else{ 
+        if(allminus)
+            add[cur]=true;
+        else if(cur!=1)
+            sub[cur]=true;
+    }
+}
+void solve() {
+
+    cin>>n;
+    repe(i,n)
+        add[i]=0,sub[i]=0,v[i].clear();
+
+    repe(i,n-1){
+        int x,y;
+        cin>>x>>y;
+        v[x].pb(y);
+        v[y].pb(x);
+    }    
+    dfs(1,-1);
+    int ans=0;
+    repe(i,n){
+        // cout<<i<<": "<<add[i]<<" "<<sub[i]<<"\n";
+        if(add[i])
+            ans++;
+        else if(sub[i])
+            ans--;
+    }
+
+    cout<<ans<<"\n";
+
 
 }
 
