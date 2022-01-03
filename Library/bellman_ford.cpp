@@ -1,4 +1,5 @@
 const int MX = 2500 + 5;
+const int INF = 1e9;
 
 struct Edge {
     int a, b, w;

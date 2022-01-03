@@ -1,6 +1,7 @@
 
-#warning works on array from 1...n
+// #warning works on array from 1...n
 // with path compression and union by rank.
+// Disjoint Set Union
 class DSU{
 
 public:

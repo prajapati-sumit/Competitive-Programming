@@ -8,7 +8,7 @@ private:
     T* segm;
     int N;
     void (*merge)(T&, T&, T&);
-    void buildtree(int cur, int start, int end, T a[]) {
+    void buildtree(int cur, int start, int end, int a[]) {
         if (start == end) {
             //BASE CASE
             segm[cur] = a[start];
