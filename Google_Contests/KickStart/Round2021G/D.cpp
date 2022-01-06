@@ -1,12 +1,6 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-
-
 using namespace std;
-// using namespace __gnu_pbds;
-
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -31,8 +25,6 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
@@ -65,63 +57,76 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
+
+
 // --------------------------------Let's Go!------------------------------------------------------------------
-
-
-
-
 struct Testcase {
 
-
+    int A;
+    void print(vector<pii>ans) {
+        for (auto &el : ans)
+            cout << el.ff << " " << el.ss << "\n";
+        // dbg(A,polygonArea(ans));
+        assert(polygonArea(ans)==A);
+    }
+    int polygonArea(vector<pii> v)
+    {   
+        int n=SZ(v);
+        // Initialize area
+        int area = 0;
+     
+        // Calculate value of shoelace formula
+        int j = n - 1;
+        for (int i = 0; i < n; i++)
+        {
+            area += (v[j].ff + v[i].ff) * (v[j].ss - v[i].ss);
+            j = i;  // j is previous vertex to i
+        }
+        
+        // Return absolute value
+        return abs(area);
+    }
     void solve() {
 
         int n;
-        cin >> n;
-        vec<int>a(n + 1, 0);
-        map<int, int>mp;
-        repe(i, n)   cin >> a[i], mp[a[i]];
-        int q;
-        cin >> q;
-        vec<pii>Q(q + 1);
-        repe(i, q)   cin >> Q[i].ff >> Q[i].ss, mp[Q[i].ff], mp[Q[i].ss];
+        cin >> n >> A;
+        assert(n >= 3 && n <= 5);
+        if (n == 3) {
+            cout << "POSSIBLE\n";
+            print({ {0, 0}, {A, 0}, {A, 1} });
 
-        int nax = 0;
-        for (auto &el : mp)
-            el.ss = ++nax;
-        repe(i, n)
-        a[i] = mp[a[i]];
-        int indx[nax + 1] = {0};
-        vector<int>v[nax + 1];
-        repe(i, q) {
-            v[Q[i].ss].pb(Q[i].ff);
-        }
-        int val[nax+1]={0};
-        int dp[n + 1] = {0};
-        int pre[n + 1] = {0};
-        int ind = 0;
-        repe(i, n) {
-            int mx = 0;
-            for (int x : v[a[i]]) {
-                if (dp[mx] < dp[val[x]])
-                    mx = val[x];
-            }
-            dp[i] = 1 + dp[mx];
-            pre[i] = mx;
-            if (dp[val[a[i]]] < dp[i]) {
-                val[a[i]] = i;
-            }
-            if (dp[ind] < dp[i])
-                ind = i;
-        }
-        vector<int>res;
-        for(int cur=ind;cur>0;cur=pre[cur])
-            res.pb(cur);
-        reverse(all(res));
-        cout<<SZ(res)<<"\n";
-        for(int x:res)
-            cout<<x<<" ";
-        cout<<"\n";
 
+        }
+        else if (n == 4) {
+            if (A < 2) {
+                cout << "IMPOSSIBLE\n";
+                return;
+            }
+            cout << "POSSIBLE\n";
+            if (A % 2 == 0) {
+                print({ {0, 0}, {A / 2, 0}, {A / 2, 1}, {0, 1} });
+            }
+            else {
+                print({
+                    {0, 0}, {A - 1, 0}, {(A + 1) / 2, 1}, {(A - 1) / 2, 1}
+                });
+
+            }
+        }
+        else {
+            if (A < 3 ) {
+                cout << "IMPOSSIBLE\n";
+            }
+            else {
+                cout << "POSSIBLE\n";
+                print({
+                    {0, 0}, {1, 0}, {1, 1}, {2, A - 1}, {0, 1}
+                });
+
+
+
+            }
+        }
     }
 
 };
@@ -134,7 +139,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout << "Case #" << tt << ": ";
         Testcase T;
         T.solve();
     }

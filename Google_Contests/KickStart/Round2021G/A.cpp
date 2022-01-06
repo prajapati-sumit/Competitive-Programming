@@ -1,12 +1,6 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-
-
 using namespace std;
-// using namespace __gnu_pbds;
-
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -31,21 +25,19 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
 // -----------------------------Debugging----------------------------------------------------------------------
 template<class Fun> class y_combinator_result {
     Fun fun_;
-public:
-    template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
-    template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
+    public:
+        template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+        template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
 };
 template<class Fun> decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
-template < typename T_container, typename T = typename enable_if < !is_same<T_container, string>::value, typename T_container::value_type >::type > ostream & operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
+template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
 void dbg_out() { cerr << endl; }
 template<typename TT, typename... UU> void dbg_out(TT H, UU... T) { cerr << ' ' << H; dbg_out(T...); }
 #ifndef ONLINE_JUDGE
@@ -65,62 +57,41 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
+
+
 // --------------------------------Let's Go!------------------------------------------------------------------
-
-
-
-
-struct Testcase {
-
-
+struct Testcase{
+    
+    
     void solve() {
 
-        int n;
-        cin >> n;
-        vec<int>a(n + 1, 0);
-        map<int, int>mp;
-        repe(i, n)   cin >> a[i], mp[a[i]];
-        int q;
-        cin >> q;
-        vec<pii>Q(q + 1);
-        repe(i, q)   cin >> Q[i].ff >> Q[i].ss, mp[Q[i].ff], mp[Q[i].ss];
+        int n,d,c,m;
+        cin>>n>>d>>c>>m;
+        string s;
+        cin>>s;
+        bool fed[n]={0};
+        rep(i,n){
+            if(s[i]=='D'){
+                if(d==0)
+                    break;
+                d--;
+                fed[i]=true;
+                c+=m;
+            }
+            else{
+                if(c==0)
+                    break;
+                c--;
+                fed[i]=true;
+            }
 
-        int nax = 0;
-        for (auto &el : mp)
-            el.ss = ++nax;
-        repe(i, n)
-        a[i] = mp[a[i]];
-        int indx[nax + 1] = {0};
-        vector<int>v[nax + 1];
-        repe(i, q) {
-            v[Q[i].ss].pb(Q[i].ff);
         }
-        int val[nax+1]={0};
-        int dp[n + 1] = {0};
-        int pre[n + 1] = {0};
-        int ind = 0;
-        repe(i, n) {
-            int mx = 0;
-            for (int x : v[a[i]]) {
-                if (dp[mx] < dp[val[x]])
-                    mx = val[x];
+        rep(i,n)
+            if(!fed[i] && s[i]=='D'){
+                cout<<"NO\n";
+                return;;
             }
-            dp[i] = 1 + dp[mx];
-            pre[i] = mx;
-            if (dp[val[a[i]]] < dp[i]) {
-                val[a[i]] = i;
-            }
-            if (dp[ind] < dp[i])
-                ind = i;
-        }
-        vector<int>res;
-        for(int cur=ind;cur>0;cur=pre[cur])
-            res.pb(cur);
-        reverse(all(res));
-        cout<<SZ(res)<<"\n";
-        for(int x:res)
-            cout<<x<<" ";
-        cout<<"\n";
+        cout<<"YES\n";
 
     }
 
@@ -134,7 +105,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         Testcase T;
         T.solve();
     }

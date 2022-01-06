@@ -1,12 +1,6 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-
-
 using namespace std;
-// using namespace __gnu_pbds;
-
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -31,8 +25,6 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
@@ -61,67 +53,59 @@ template<typename TT, typename... UU> void dbg_out(TT H, UU... T) { cerr << ' ' 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
-const int INF = 1e9;
+const int INF = 1e16;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
+
+
 // --------------------------------Let's Go!------------------------------------------------------------------
-
-
-
-
+struct Figure {
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+};
+struct Point{
+    int x;
+    int y;
+};
 struct Testcase {
 
-
+    int fn(Figure A,Point P){
+        int d1=min(abs(P.y-A.y1),abs(P.y-A.y2));
+        int d2=min(abs(P.x-A.x1),abs(P.x-A.x2));
+        bool c1=(A.x1<=P.x && P.x<=A.x2);
+        bool c2=(A.y1<=P.y && P.y<=A.y2);
+        if(c1 && c2)
+            return 0;
+        else if(c1 && !c2)
+            return d1;
+        else if(!c1 && c2)
+            return d2;
+        return d1+d2;
+    }
     void solve() {
 
         int n;
         cin >> n;
-        vec<int>a(n + 1, 0);
-        map<int, int>mp;
-        repe(i, n)   cin >> a[i], mp[a[i]];
-        int q;
-        cin >> q;
-        vec<pii>Q(q + 1);
-        repe(i, q)   cin >> Q[i].ff >> Q[i].ss, mp[Q[i].ff], mp[Q[i].ss];
-
-        int nax = 0;
-        for (auto &el : mp)
-            el.ss = ++nax;
-        repe(i, n)
-        a[i] = mp[a[i]];
-        int indx[nax + 1] = {0};
-        vector<int>v[nax + 1];
-        repe(i, q) {
-            v[Q[i].ss].pb(Q[i].ff);
+        // assert(n<=30);
+        Figure P[n];
+        vector<int>forx,fory;
+        rep(i,n){
+            cin>>P[i].x1>>P[i].y1>>P[i].x2>>P[i].y2;
+            forx.pb(P[i].x1);
+            forx.pb(P[i].x2);
+            fory.pb(P[i].y1);
+            fory.pb(P[i].y2);
         }
-        int val[nax+1]={0};
-        int dp[n + 1] = {0};
-        int pre[n + 1] = {0};
-        int ind = 0;
-        repe(i, n) {
-            int mx = 0;
-            for (int x : v[a[i]]) {
-                if (dp[mx] < dp[val[x]])
-                    mx = val[x];
-            }
-            dp[i] = 1 + dp[mx];
-            pre[i] = mx;
-            if (dp[val[a[i]]] < dp[i]) {
-                val[a[i]] = i;
-            }
-            if (dp[ind] < dp[i])
-                ind = i;
-        }
-        vector<int>res;
-        for(int cur=ind;cur>0;cur=pre[cur])
-            res.pb(cur);
-        reverse(all(res));
-        cout<<SZ(res)<<"\n";
-        for(int x:res)
-            cout<<x<<" ";
-        cout<<"\n";
-
+        sort(all(forx));
+        sort(all(fory));
+        // dbg(forx);
+        // dbg(fory);
+        int x=forx[(SZ(forx)-1)/2];
+        int y=fory[(SZ(fory)-1)/2];
+        cout<<x<<" "<<y<<"\n";
     }
 
 };
@@ -134,7 +118,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout<<"Case #"<<tt<<": ";
         Testcase T;
         T.solve();
     }

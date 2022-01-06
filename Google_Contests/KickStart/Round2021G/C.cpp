@@ -1,12 +1,6 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-
-
 using namespace std;
-// using namespace __gnu_pbds;
-
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -31,8 +25,6 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
@@ -65,62 +57,41 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
+
+
 // --------------------------------Let's Go!------------------------------------------------------------------
-
-
-
-
 struct Testcase {
 
 
     void solve() {
 
-        int n;
-        cin >> n;
-        vec<int>a(n + 1, 0);
-        map<int, int>mp;
-        repe(i, n)   cin >> a[i], mp[a[i]];
-        int q;
-        cin >> q;
-        vec<pii>Q(q + 1);
-        repe(i, q)   cin >> Q[i].ff >> Q[i].ss, mp[Q[i].ff], mp[Q[i].ss];
-
-        int nax = 0;
-        for (auto &el : mp)
-            el.ss = ++nax;
+        int n, k;
+        cin >> n >> k;
+        int a[n + 1];
+        a[0] = 0;
         repe(i, n)
-        a[i] = mp[a[i]];
-        int indx[nax + 1] = {0};
-        vector<int>v[nax + 1];
-        repe(i, q) {
-            v[Q[i].ss].pb(Q[i].ff);
-        }
-        int val[nax+1]={0};
-        int dp[n + 1] = {0};
-        int pre[n + 1] = {0};
-        int ind = 0;
-        repe(i, n) {
-            int mx = 0;
-            for (int x : v[a[i]]) {
-                if (dp[mx] < dp[val[x]])
-                    mx = val[x];
+            cin >> a[i], a[i] += a[i - 1];
+        int ans = INF;
+        vec<int>best(k+1,INF);
+        best[0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=i;j<=n;j++){
+                int sum2=a[j]-a[i-1];
+                int rem=k-sum2;
+                if(rem<0)
+                    continue;
+                ans=min(ans,(j-i+1)+best[rem]);
             }
-            dp[i] = 1 + dp[mx];
-            pre[i] = mx;
-            if (dp[val[a[i]]] < dp[i]) {
-                val[a[i]] = i;
+            // dbg(best);
+            for(int z=1;z<=i;z++){
+                int sum=a[i]-a[z-1];
+                if(sum<=k)
+                    best[sum]=min(best[sum],(i-z+1));
             }
-            if (dp[ind] < dp[i])
-                ind = i;
         }
-        vector<int>res;
-        for(int cur=ind;cur>0;cur=pre[cur])
-            res.pb(cur);
-        reverse(all(res));
-        cout<<SZ(res)<<"\n";
-        for(int x:res)
-            cout<<x<<" ";
-        cout<<"\n";
+        if (ans >= INF)
+            ans = -1;
+        cout << ans << "\n";
 
     }
 
@@ -134,7 +105,7 @@ int32_t main() {
     int t = 1;
     cin >> t;
     repe(tt, t) {
-        // cout<<"Case #"<<tt<<": ";
+        cout << "Case #" << tt << ": ";
         Testcase T;
         T.solve();
     }

@@ -1,12 +1,6 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-
-
 using namespace std;
-// using namespace __gnu_pbds;
-
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -31,8 +25,6 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
@@ -65,63 +57,73 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
+
+
 // --------------------------------Let's Go!------------------------------------------------------------------
-
-
-
-
 struct Testcase {
 
 
     void solve() {
 
         int n;
-        cin >> n;
-        vec<int>a(n + 1, 0);
-        map<int, int>mp;
-        repe(i, n)   cin >> a[i], mp[a[i]];
-        int q;
-        cin >> q;
-        vec<pii>Q(q + 1);
-        repe(i, q)   cin >> Q[i].ff >> Q[i].ss, mp[Q[i].ff], mp[Q[i].ss];
-
-        int nax = 0;
-        for (auto &el : mp)
-            el.ss = ++nax;
-        repe(i, n)
-        a[i] = mp[a[i]];
-        int indx[nax + 1] = {0};
-        vector<int>v[nax + 1];
-        repe(i, q) {
-            v[Q[i].ss].pb(Q[i].ff);
+        cin>>n;
+        int a[n+1];
+        repe(i,n)
+            cin>>a[i];
+        sort(a+1,a+n+1);
+        if(n==2){
+            cout<<"0\n";
+            return;
         }
-        int val[nax+1]={0};
-        int dp[n + 1] = {0};
-        int pre[n + 1] = {0};
-        int ind = 0;
-        repe(i, n) {
-            int mx = 0;
-            for (int x : v[a[i]]) {
-                if (dp[mx] < dp[val[x]])
-                    mx = val[x];
-            }
-            dp[i] = 1 + dp[mx];
-            pre[i] = mx;
-            if (dp[val[a[i]]] < dp[i]) {
-                val[a[i]] = i;
-            }
-            if (dp[ind] < dp[i])
-                ind = i;
+        if(n==3){
+            int ans;
+            if(a[1]==a[2] || a[2]==a[3])
+                ans=0;
+            else
+                ans=min(a[3]-a[2],a[2]-a[1]);
+            cout<<ans<<"\n";
+            return;           
         }
-        vector<int>res;
-        for(int cur=ind;cur>0;cur=pre[cur])
-            res.pb(cur);
-        reverse(all(res));
-        cout<<SZ(res)<<"\n";
-        for(int x:res)
-            cout<<x<<" ";
-        cout<<"\n";
+        int target=a[1]+a[n];
+        int cand[n-2];
+        FOR(i,2,n-1){
+            cand[i-2]=a[i];
+        }
+        int ans=INF;
+        int sz=n-2;
+        rep(i,sz){
+            int rem=target-cand[i];
+            // int j=lower_bound(cand,cand+i-1,rem)-cand;
+            // if(j==i){
+            //     if(i>0)
+            //         ans=min(ans,abs(rem-cand[i-1]));
+            // }
+            // else{
+            //     ans=min(ans,abs(rem-cand[j]));
+            //     if(j>0)
+            //         ans=min(ans,abs(rem-cand[j-1]));
+            // }
+            int l=0,r=i-1,mid,ind=-1;
+            while(l<=r){
+                mid=(l+r)>>1;
+                if(cand[mid]>=rem){
+                    ind=mid;
+                    r=mid-1;
+                }
+                else
+                    l=mid+1;
+            }
+            if(i>0)
+                ans=min(ans,abs(rem-cand[i-1]));
+            if(ind!=-1){
+                ans=min(ans,abs(rem-cand[ind]));
+                if(ind>0)
+                    ans=min(ans,abs(rem-cand[ind-1]));
+            }
 
+
+        }
+        cout<<ans<<"\n";
     }
 
 };

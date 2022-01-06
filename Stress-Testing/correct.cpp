@@ -1,8 +1,14 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+
+
 using namespace std;
+// using namespace __gnu_pbds;
 
 
+//---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
 #define ll                      long long
 #define int                     long long
@@ -15,6 +21,7 @@ using namespace std;
 #define SZ(x)                   ((int)x.size())
 #define set_bits                __builtin_popcountll
 #define all(a)                  a.begin(),a.end()
+#define vec                     vector
 #define trav(x,v)               for(auto &x:v)
 #define rep(i,n)                for(int i=0;i<n;i++)
 #define repe(i,n)               for(int i=1;i<=n;i++)
@@ -24,34 +31,87 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
+#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
+#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
+// ------------------------------------------------------------------------------------------------------------
 
 
+// -----------------------------Debugging----------------------------------------------------------------------
+template<class Fun> class y_combinator_result {
+    Fun fun_;
+public:
+    template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+    template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
+};
+template<class Fun> decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
+template < typename T_container, typename T = typename enable_if < !is_same<T_container, string>::value, typename T_container::value_type >::type > ostream & operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
+void dbg_out() { cerr << endl; }
+template<typename TT, typename... UU> void dbg_out(TT H, UU... T) { cerr << ' ' << H; dbg_out(T...); }
+#ifndef ONLINE_JUDGE
+#define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
+#else
+#define dbg(...)
+#endif
+// -----------------------------------------------------------------------------------------------------------
+
+
+
+// ------------------------------Global Variables-------------------------------------------------------------
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 1e5 + 5;
+const int MX = 5e4 + 5;
+// -----------------------------------------------------------------------------------------------------------
+
+// --------------------------------Let's Go!------------------------------------------------------------------
 
 
+vector<int>G[MX];
+int dp[MX][501];
+// dp[i][j] = number of paths in subtree of i
+// going through i having length j;
+int n, k;
+int ans = 0;
 
+void dfs(int u, int p) {
 
-
-void solve() {
-
-
-    int n,d;
-    cin>>n>>d;
-    for(int x=0;x<=MX;x++){
-        int tmp=n+x;
-        string s=to_string(tmp);
-        if(count(all(s),(char)d+'0')==0){
-            cout<<x<<"\n";
-            return;
+    dp[u][0] = 1;
+    for (int c : G[u]) {
+        if (c == p)
+            continue;
+        dfs(c, u);
+        for (int i = 0; i < k; i++) {
+            ans += dp[c][i] * dp[u][k - i - 1];
+        }
+        for (int i = 0; i < k; i++) {
+            dp[u][i + 1] += dp[c][i];
         }
     }
 
-}
 
+}
+struct Testcase {
+
+
+    void solve() {
+
+        cin >> n >> k;
+        repe(i, n - 1) {
+            int u, v;
+            cin >> u >> v;
+            G[u].pb(v);
+            G[v].pb(u);
+        }
+
+        dfs(1, -1);
+        cout << ans << "\n";
+
+
+    }
+
+};
 
 int32_t main() {
     ios_base::sync_with_stdio(false);
@@ -59,10 +119,11 @@ int32_t main() {
 
     auto time0 = curtime;
     int t = 1;
-    cin >> t;
+    // cin >> t;
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
-        solve();
+        Testcase T;
+        T.solve();
     }
 
     // cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";

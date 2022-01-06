@@ -1,6 +1,12 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+
+
 using namespace std;
+// using namespace __gnu_pbds;
+
 
 //---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
@@ -25,6 +31,8 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
+#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
+#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
 // ------------------------------------------------------------------------------------------------------------
 
 
@@ -57,15 +65,18 @@ const int INF = 1e9;
 const int MX = 1e5 + 5;
 // -----------------------------------------------------------------------------------------------------------
 
-
-
 // --------------------------------Let's Go!------------------------------------------------------------------
+
+
+
+
 struct Testcase{
-    
+        
     
     void solve() {
 
-        // Hello there
+        
+
 
     }
 

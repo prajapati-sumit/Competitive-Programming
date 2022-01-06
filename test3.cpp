@@ -1,8 +1,14 @@
 //~ author      : Sumit Prajapati
 #include <bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+
+
 using namespace std;
+// using namespace __gnu_pbds;
 
 
+//---------------------Macros----------------------------------------------------------------------------------
 #define ull                     unsigned long long
 #define ll                      long long
 #define int                     long long
@@ -15,6 +21,7 @@ using namespace std;
 #define SZ(x)                   ((int)x.size())
 #define set_bits                __builtin_popcountll
 #define all(a)                  a.begin(),a.end()
+#define vec                     vector
 #define trav(x,v)               for(auto &x:v)
 #define rep(i,n)                for(int i=0;i<n;i++)
 #define repe(i,n)               for(int i=1;i<=n;i++)
@@ -24,131 +31,56 @@ using namespace std;
 #define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
+#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
+#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
+// ------------------------------------------------------------------------------------------------------------
 
 
+// -----------------------------Debugging----------------------------------------------------------------------
+template<class Fun> class y_combinator_result {
+    Fun fun_;
+    public:
+        template<class T> explicit y_combinator_result(T &&fun): fun_(std::forward<T>(fun)) {}
+        template<class ...Args> decltype(auto) operator()(Args &&...args) { return fun_(std::ref(*this), std::forward<Args>(args)...); }
+};
+template<class Fun> decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
+template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
+void dbg_out() { cerr << endl; }
+template<typename TT, typename... UU> void dbg_out(TT H, UU... T) { cerr << ' ' << H; dbg_out(T...); }
+#ifndef ONLINE_JUDGE
+#define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
+#else
+#define dbg(...)
+#endif
+// -----------------------------------------------------------------------------------------------------------
+
+
+
+// ------------------------------Global Variables-------------------------------------------------------------
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 3e5 + 5;
+const int MX = 1e5 + 5;
+// -----------------------------------------------------------------------------------------------------------
+
+// --------------------------------Let's Go!------------------------------------------------------------------
 
 
-// 1-base indexing
-void combine(int& x,int& y,int& res){
-    res=(x+y)%MDL;
-}
-template <typename T>
-class SegmentTree {
-private:
-    T* segm;
-    int N;
-    void (*merge)(T&, T&, T&);
-    void buildtree(int cur, int start, int end, T a[]) {
-        if (start == end) {
-            //BASE CASE
-            segm[cur] = a[start];
-            return;
-        }
-        int mid = (start + end) >> 1;
-        buildtree(cur << 1, start, mid, a);
-        buildtree((cur << 1) ^ 1, mid + 1, end, a);
-        //MERGING STEP
-        (*merge)(segm[(cur << 1)], segm[(cur << 1) ^ 1], segm[cur]);
 
-    }
-    T query(int cur, int start, int end, int qs, int qe) {
-        if (start >= qs && end <= qe)
-            return segm[cur];
-        if (start > qe || end < qs)
-            return T(0);          //INVALID RETURN
-        int mid = (start + end) >> 1;
-        T A = query((cur << 1) , start, mid, qs, qe);
-        T B = query((cur << 1) ^ 1, mid + 1, end, qs, qe);
-        //MERGING STEP
-        T res;
-        (*merge)(A, B, res);
 
-        return res;
-    }
-    void update(int cur, int start, int end, int ind, T val) {
-        if (start == ind && start == end) {
-            //DO UPDATE
-            segm[cur] = (segm[cur]+val)%MDL;
-            return;
-        }
-        if (start > ind || end < ind)
-            return;          //OUT OF RANGE
-        int mid = (start + end) >> 1;
-        update(cur << 1, start, mid, ind, val);
-        update((cur << 1) ^ 1, mid + 1, end, ind, val);
-        //MERGING STEP
-        (*merge)(segm[(cur << 1)], segm[(cur << 1) ^ 1], segm[cur]);
+struct Testcase{
+        
+    
+    void solve() {
 
-    }
-public:
+        
 
-    SegmentTree(int n, void (*fun)(T&, T&, T&) = &combine) {
-        N = n;
-        segm = new T[4*(N + 1)]();
-        merge = fun;
 
-    }
-    SegmentTree(int a[], int n,void (*fun)(T&, T&, T&) = &combine) {
-        N = n;
-        segm = new T[4*(N + 1)]();
-        merge = fun;
-        buildtree(1, 1, N, a);
-    }
-    T query(int l, int r) {
-        return query(1, 1, N, l, r);
-    }
-    void update(int ind, T val) {
-        update(1, 1, N, ind, val);
     }
 
 };
-int pow2[MX];
-int invpow2[MX];
-ll bin_power(ll a,ll b,ll md){
-    ll res=1;
-    while (b){
-        if (b&1)
-            res=(res*a)%md;
-        a=(a*a)%md;
-        b>>=1;
-    }
-    return res;
-}
-void solve() {
-
-    int n;
-    cin>>n;
-    int nax=1;
-    int a[n+1];
-    map<int,int>mp;
-    repe(i,n){
-        cin>>a[i];
-        mp[a[i]];
-    }    
-    for(auto& el:mp)
-        el.ss=nax++;
-    repe(i,n)
-        a[i]=mp[a[i]];
-
-    SegmentTree<int>ST(nax);
-    int ans=0;
-    repe(i,n){
-        int x=a[i];
-        int qu=ST.query(1,x);
-        ans=(ans+qu*pow2[i])%MDL;
-        ST.update(x,invpow2[i+1]);
-    }
-    cout<<ans<<"\n";
-
-
-
-}
-
 
 int32_t main() {
     ios_base::sync_with_stdio(false);
@@ -156,16 +88,11 @@ int32_t main() {
 
     auto time0 = curtime;
     int t = 1;
-    // cin >> t;
-    pow2[0]=1;
-    invpow2[0]=1;
-    repe(i,MX-1){
-        pow2[i]=(2*pow2[i-1])%MDL;
-        invpow2[i]=bin_power(pow2[i],MDL-2,MDL);
-    }
+    cin >> t;
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
-        solve();
+        Testcase T;
+        T.solve();
     }
 
     // cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";
