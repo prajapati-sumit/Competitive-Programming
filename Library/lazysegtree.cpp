@@ -9,7 +9,7 @@ private:
     int* lazy;
     int N;
     void (*merge)(T&, T&, T&);
-    void buildtree(int cur, int start, int end, T a[]) {
+    void buildtree(int cur, int start, int end, int a[]) {
         if (start == end) {
             //BASE CASE
             segm[cur] = a[start];
@@ -71,21 +71,21 @@ public:
     LazySegTree(int n, void (*fun)(T&, T&, T&) = &combine) {
         N = n;
         segm = new T[4 * (N + 1)]();
-        lazy = new T[4 * (N + 1)]();
+        lazy = new int[4 * (N + 1)]();
         merge = fun;
 
     }
     LazySegTree(int a[], int n, void (*fun)(T&, T&, T&) = &combine) {
         N = n;
         segm = new T[4 * (N + 1)]();
-        lazy = new T[4 * (N + 1)]();
+        lazy = new int[4 * (N + 1)]();
         merge = fun;
         buildtree(1, 1, N, a);
     }
     T query(int l, int r) {
         return query(1, 1, N, l, r);
     }
-    void update(int l, int r, T val) {
+    void update(int l, int r, int val) {
         update(1, 1, N, l, r, val);
     }
 
