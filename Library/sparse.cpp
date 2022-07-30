@@ -1,5 +1,5 @@
 // works on 1-base indexing
-
+// merge function should be idempotent
 class SparseTable {
     vector<vector<int>>sparse;
     int n;
@@ -37,13 +37,14 @@ public:
         init(a);
     }
     int query(int x, int y) {
-        #warning check this condition
+#warning check this condition
         if (x > y)
             return INF;
 
         int h = LOG2[y - x + 1];
-        merge(sparse[x][h], sparse[y - (1 << h) + 1][h], h);
-        return h;
+        int res;
+        merge(sparse[x][h], sparse[y - (1 << h) + 1][h], res);
+        return res;
     }
 };
 

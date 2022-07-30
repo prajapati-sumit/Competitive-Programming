@@ -1,6 +1,6 @@
 // 1-base indexing
-void combine(int& x,int& y,int& res){
-    res=x+y;
+void combine(int& x, int& y, int& res) {
+    res = x + y;
 }
 template <typename T>
 class SegmentTree {
@@ -54,13 +54,13 @@ public:
 
     SegmentTree(int n, void (*fun)(T&, T&, T&) = &combine) {
         N = n;
-        segm = new T[4*(N + 1)]();
+        segm = new T[4 * (N + 1)]();
         merge = fun;
 
     }
-    SegmentTree(int a[], int n,void (*fun)(T&, T&, T&) = &combine) {
+    SegmentTree(int a[], int n, void (*fun)(T&, T&, T&) = &combine) {
         N = n;
-        segm = new T[4*(N + 1)]();
+        segm = new T[4 * (N + 1)]();
         merge = fun;
         buildtree(1, 1, N, a);
     }

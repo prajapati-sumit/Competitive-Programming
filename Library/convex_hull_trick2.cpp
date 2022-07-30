@@ -1,4 +1,4 @@
-
+// better
 const ll is_query = -(1LL<<62);
 struct Line {
     ll m, b;

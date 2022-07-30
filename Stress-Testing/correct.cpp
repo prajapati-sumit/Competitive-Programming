@@ -1,16 +1,34 @@
 //~ author      : Sumit Prajapati
+
+
+
+/*         Optimisations        */
+
+// #pragma GCC optimize("O3")
+// #pragma GCC target ("avx2")
+// #pragma GCC optimize("Ofast")
+// #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+// #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
+using namespace std;
+
+
+
+/*-----------------Ordered Set-------------------*/
+
 // #include <ext/pb_ds/assoc_container.hpp>
 // #include <ext/pb_ds/tree_policy.hpp>
-
-
-using namespace std;
 // using namespace __gnu_pbds;
+// template <typename T>
+// using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 
-//---------------------Macros----------------------------------------------------------------------------------
+
+/*-----------------Macros------------------------*/
+
 #define ull                     unsigned long long
 #define ll                      long long
+#define ld                      long double
 #define int                     long long
 #define pii                     pair<int, int>
 #define pll                     pair<ll, ll>
@@ -21,22 +39,30 @@ using namespace std;
 #define SZ(x)                   ((int)x.size())
 #define set_bits                __builtin_popcountll
 #define all(a)                  a.begin(),a.end()
-#define vec                     vector
-#define trav(x,v)               for(auto &x:v)
 #define rep(i,n)                for(int i=0;i<n;i++)
 #define repe(i,n)               for(int i=1;i<=n;i++)
-#define FOR(i,a,b)              for(int i=a;i<=b;i++)
+#define rev(i,n)                for(int i=n-1;i>=0;i--)
+#define reve(i,n)               for(int i=n;i>=1;i--)
+#define FOR(i,a,b)              for(int i=(a);i<=(b);i++)
 #define curtime                 chrono::high_resolution_clock::now()
 #define timedif(start,end)      chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-#define myshuffle(a,n)          FOR(i,1,n-1) swap(a[i], a[rand() % (i + 1)])
 #define shuffle(a)              shuffle(a.begin(), a.end(), rng)
 #define mtrand(a,b)             uniform_int_distribution<int>(a, b)(rng)
-#define ordered_set(T)          tree< T ,  null_type ,  less<T> ,  rb_tree_tag ,  tree_order_statistics_node_update >
-#define myunique(v)             sort( vec.begin(), vec.end() );vec.erase( unique( vec.begin(), vec.end() ), vec.end() )
-// ------------------------------------------------------------------------------------------------------------
 
 
-// -----------------------------Debugging----------------------------------------------------------------------
+/*-----------------Utility Functions-------------*/
+
+int gcd(int a, int b) {return a * b == 0 ? a ^ b : __gcd(a, b);}
+template<class T>
+void remDup(vector<T>& v) { // sort and remove duplicates
+    sort(all(v)); v.erase(unique(all(v)), end(v));
+}
+ll power(ll a, ll b, ll mod) {ll res = 1; while (b > 0) {if (b & 1)res = (res * a) % mod; a = (a * a) % mod; b = b >> 1;} return res;}
+ll inv(int x, int mod) {return power(x, mod - 2, mod);}
+
+
+/*-----------------Debugging---------------------*/
+
 template<class Fun> class y_combinator_result {
     Fun fun_;
 public:
@@ -50,83 +76,86 @@ void dbg_out() { cerr << endl; }
 template<typename TT, typename... UU> void dbg_out(TT H, UU... T) { cerr << ' ' << H; dbg_out(T...); }
 #ifndef ONLINE_JUDGE
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
+#define stop(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__);cerr<<"exited\n";exit(0);
 #else
 #define dbg(...)
+#define stop(...)
 #endif
-// -----------------------------------------------------------------------------------------------------------
 
+/*-----------------Global Variables--------------*/
 
-
-// ------------------------------Global Variables-------------------------------------------------------------
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MD = 1e9 + 7;
 const int MDL = 998244353;
 const int INF = 1e9;
-const int MX = 5e4 + 5;
-// -----------------------------------------------------------------------------------------------------------
+const ll INFLL = 1e18;
+const int MX = 1e5 + 5;
+const int dx[4] {1, 0, -1, 0}, dy[4] {0, 1, 0, -1};
+template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
-// --------------------------------Let's Go!------------------------------------------------------------------
 
 
-vector<int>G[MX];
-int dp[MX][501];
-// dp[i][j] = number of paths in subtree of i
-// going through i having length j;
-int n, k;
-int ans = 0;
+/*-----------------Let's Go----------------------*/
 
-void dfs(int u, int p) {
 
-    dp[u][0] = 1;
-    for (int c : G[u]) {
-        if (c == p)
-            continue;
-        dfs(c, u);
-        for (int i = 0; i < k; i++) {
-            ans += dp[c][i] * dp[u][k - i - 1];
+
+
+void solve() {
+
+    int n;
+    cin >> n;
+    vector<int>a(n);
+    rep(i, n)
+    cin >> a[i];
+    int nax = (1 << n);
+    rep(i, nax) {
+        vector<int>b;
+        for (int j = 0; j < n; j++) {
+            if (i & (1LL << j))
+                b.pb(a[j]);
         }
-        for (int i = 0; i < k; i++) {
-            dp[u][i + 1] += dp[c][i];
+        for (int j = 0; j < n; j++) {
+            if (i & (1LL << j));
+            else
+                b.pb(a[j]);
+        }
+        bool ok = true;
+        // dbg(i, b);
+        for (int j = 0; j < n - 1; j++)
+            if (b[j + 1] < b[j]) {
+                ok = false;
+                break;
+            }
+        if (ok) {
+            cout << "YES\n";
+            return;
         }
     }
-
-
+    cout << "NO\n";
 }
-struct Testcase {
 
 
-    void solve() {
-
-        cin >> n >> k;
-        repe(i, n - 1) {
-            int u, v;
-            cin >> u >> v;
-            G[u].pb(v);
-            G[v].pb(u);
-        }
-
-        dfs(1, -1);
-        cout << ans << "\n";
-
-
-    }
-
-};
 
 int32_t main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    auto time0 = curtime;
+#ifdef LOCAL
+    // auto time0 = curtime;
+#endif
+
     int t = 1;
-    // cin >> t;
+    cin >> t;
+
     repe(tt, t) {
         // cout<<"Case #"<<tt<<": ";
-        Testcase T;
-        T.solve();
+        solve();
     }
 
+#ifdef LOCAL
     // cerr<<"Execution Time: "<<timedif(time0,curtime)*1e-9<<" sec\n";
+#endif
+
     return 0;
 
 }

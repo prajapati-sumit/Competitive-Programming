@@ -1,30 +1,75 @@
 
+inf = 1e9
 
-# paste given data within quotes.
-st="399, 300, 300, 306, 398, 312, 331, 321, 438, 301"
-tmp = st.split(',');
-n=len(tmp)
 
-data=[0]*n
+try:
+    a = []  
+    while True:
+        a.append(list(map(int,input().strip().split())))
+except:
+    pass
+
+n = len(a)
+m = len(a[0])
+
+
 for i in range(n):
-    data[i]=float(tmp[i])
+    cur = max(a[i])
+    cnt = 0
+    for k in range(m):
+        cnt+=(a[i][k] ==cur)
+    if(cnt>1):
+        print("-1")
+        exit(0)
 
-print("Given Data:",n,"obsevations")
-print(data,"\n")
+    cur = min(a[i])
+    cnt = 0
+    for k in range(m):
+        cnt+=(a[i][k] ==cur)
+    if(cnt>1):
+        print("-1")
+        exit(0)
+ 
+for j in range(m):
+    cur = -inf
+    for i in range(n):
+        cur = max(cur,a[i][j])
+    cnt = 0
+    for i in range(n):
+        cnt+=(a[i][j] ==cur)
+    if(cnt>1):
+        print("-1")
+        exit(0)
 
-sq=0
-s=0
-for d in data:
-    s+=d
-xbar=s/n
+    cur = inf
+    for i in range(n):
+        cur = min(cur,a[i][j])
 
-u=3.180 #write the population mean here.
-sq2=0
-for d in data:
-    sq+=(xbar-d)*(xbar-d)
-    sq2+=(u-d)*(u-d)
+    cnt = 0
+    for i in range(n):
+        cnt+=(a[i][j] ==cur)
+    if(cnt>1):
+        print("-1")
+        exit(0)
 
-print("Sample Mean:",xbar,sep="\t\t\t")
-print("Sample Variance,S^2:",sq/(n-1),sep="\t")
-print("Biased Variance,S*^2:",sq/(n),sep="\t")
-print("WithU Variance,Su^2:",sq/(n),sep="\t")
+cnt=0
+for i in range(n):
+    for j in range(m):
+        if(max(a[i])==a[i][j] or min(a[i])==a[i][j]):
+            cnt+=1
+        else:
+            cur = -inf
+            for k in range(n):
+                cur = max(cur,a[k][j])
+
+            if(a[i][j]==cur):
+                cnt+=1
+            else:
+                cur = inf
+                for k in range(n):
+                    cur = min(cur,a[k][j])
+                if(a[i][j]==cur):
+                    cnt+=1
+        # print(i,j,a[i][j],cnt)
+
+print(cnt);

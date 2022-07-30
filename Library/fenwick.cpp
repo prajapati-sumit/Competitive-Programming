@@ -1,7 +1,7 @@
 
 // One-base indexing.
 // don't query outside range [1,n]
-struct FenwickTree{
+struct FenwickTree {
     vector<int> bit;  // binary indexed tree
     int n;
 
@@ -10,14 +10,14 @@ struct FenwickTree{
         bit.assign(n + 1, 0);
     }
 
-    FenwickTree(vector<int> &a,int n):FenwickTree(a.size()) {
+    FenwickTree(vector<int> &a, int n): FenwickTree(a.size()) {
         for (int i = 1; i <= n; i++)
             add(i, a[i]);
     }
 
     int sum(int idx) {
         int ret = 0;
-        for (; idx >=1; idx -= idx & -idx){
+        for (; idx >= 1; idx -= idx & -idx) {
             ret += bit[idx];
         }
         return ret;
