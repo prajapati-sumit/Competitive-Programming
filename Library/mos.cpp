@@ -14,7 +14,7 @@ void add_element(int x){
 }
 void remove_element(int x){
     freq[a[x]]--;
-    gl_ans-=freq[a[x]^k];
+    gl_ans-=freq[a[x]^k];     
 }
 void MO_S() {
 
